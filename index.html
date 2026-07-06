@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b12">
+  <meta name="description" content="Automated price history and drop alerts for Corsair Vengeance RGB DDR5 memory at Overclockers UK.">
+  <title>OcUK RAM Price Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Price Tracker home">
+        <span class="brand-mark" aria-hidden="true">£</span>
+        <span>
+          <strong>Price Tracker</strong>
+          <small>Automated by GitHub Actions</small>
+        </span>
+      </a>
+      <a class="github-link" href="https://github.com/Minecraftman04/Price-Tracker" target="_blank" rel="noreferrer">View repository</a>
+    </header>
+
+    <section class="hero panel">
+      <div class="hero-copy">
+        <div class="eyebrow">OVERCLOCKERS UK · SKU MY-4DU-CS</div>
+        <h1 id="product-name">Corsair Vengeance RGB EXPO 32GB DDR5-6000 CL30</h1>
+        <p class="product-summary">2 × 16GB · AMD EXPO · RGB · 6000MT/s · CL30</p>
+        <div class="status-row">
+          <span id="stock-badge" class="badge loading">Checking stock…</span>
+          <span id="checked-badge" class="badge muted">Loading latest check…</span>
+        </div>
+      </div>
+      <div class="hero-price">
+        <span class="price-label">Current price</span>
+        <strong id="current-price">—</strong>
+        <span id="price-movement" class="movement neutral">Loading price data</span>
+        <a id="product-link" class="buy-button" href="https://www.overclockers.co.uk/corsair-vengeance-rgb-expo-32gb-2x16gb-ddr5-pc5-48000c30-6000mhz-dual-cha-my-4du-cs.html" target="_blank" rel="noreferrer">Open at Overclockers UK <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+
+    <section class="metric-grid" aria-label="Price statistics">
+      <article class="metric panel">
+        <span>Lowest recorded</span>
+        <strong id="lowest-price">—</strong>
+        <small>Best price in this tracker</small>
+      </article>
+      <article class="metric panel">
+        <span>Highest recorded</span>
+        <strong id="highest-price">—</strong>
+        <small>Highest observed price</small>
+      </article>
+      <article class="metric panel">
+        <span>Checks recorded</span>
+        <strong id="history-count">—</strong>
+        <small>Changes plus daily heartbeat</small>
+      </article>
+      <article class="metric panel">
+        <span>Alert rule</span>
+        <strong id="alert-rule">Any drop</strong>
+        <small id="alert-detail">GitHub issue assigned to the owner</small>
+      </article>
+    </section>
+
+    <section class="chart-panel panel">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">PRICE HISTORY</span>
+          <h2>Recorded price over time</h2>
+        </div>
+        <div class="chart-key"><span></span> GBP including VAT</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="price-chart" role="img" aria-label="Line chart showing the product price history"></canvas>
+        <div id="chart-tooltip" class="chart-tooltip" hidden></div>
+      </div>
+    </section>
+
+    <section class="lower-grid">
+      <article class="panel activity-panel">
+        <div class="section-heading compact">
+          <div>
+            <span class="eyebrow">RECENT ACTIVITY</span>
+            <h2>Latest recorded checks</h2>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Date</th><th>Price</th><th>Stock</th><th>Reason</th></tr>
+            </thead>
+            <tbody id="history-table">
+              <tr><td colspan="4" class="empty-cell">Loading history…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <aside class="panel info-panel">
+        <span class="eyebrow">HOW IT WORKS</span>
+        <h2>Hourly checks, useful alerts</h2>
+        <ol>
+          <li><span>1</span><p>GitHub Actions checks the retailer once each hour.</p></li>
+          <li><span>2</span><p>A new record is stored when the price or stock changes, plus one daily heartbeat.</p></li>
+          <li><span>3</span><p>A price decrease creates an issue assigned to the repository owner.</p></li>
+        </ol>
+        <p class="fine-print">Retail prices can change at any time. Always confirm the basket price before purchasing.</p>
+      </aside>
+    </section>
+
+    <div id="error-banner" class="error-banner" hidden>
+      The tracker data could not be loaded. Check the repository Actions tab for the latest run.
+    </div>
+
+    <footer>
+      <span>Independent tracker · Not affiliated with Corsair or Overclockers UK</span>
+      <span id="footer-updated"></span>
+    </footer>
+  </main>
+</body>
+</html>
