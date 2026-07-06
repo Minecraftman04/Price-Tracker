@@ -3,12 +3,10 @@ name: Deploy website to GitHub Pages
 on:
   push:
     branches: ["main"]
-    paths-ignore:
-      - "data/deployment-status.json"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -22,79 +20,20 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Upload website
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: "."
 
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
-
-      - name: Verify public website
-        id: verify
-        shell: bash
-        env:
-          SITE_URL: ${{ steps.deployment.outputs.page_url }}
-        run: |
-          set -euo pipefail
-          verified="false"
-          http_status="000"
-
-          for attempt in {1..18}; do
-            http_status="$(curl --location --silent --show-error --output /tmp/site.html --write-out '%{http_code}' --max-time 30 "$SITE_URL" || true)"
-            if [ "$http_status" = "200" ] && grep -q "OcUK RAM Price Tracker" /tmp/site.html; then
-              verified="true"
-              break
-            fi
-            sleep 10
-          done
-
-          if [ "$verified" != "true" ]; then
-            echo "The deployed website did not return the expected tracker page (HTTP $http_status)."
-            exit 1
-          fi
-
-          echo "site_url=$SITE_URL" >> "$GITHUB_OUTPUT"
-          echo "http_status=$http_status" >> "$GITHUB_OUTPUT"
-
-      - name: Record successful deployment
-        env:
-          SITE_URL: ${{ steps.verify.outputs.site_url }}
-          HTTP_STATUS: ${{ steps.verify.outputs.http_status }}
-          DEPLOYED_SHA: ${{ github.sha }}
-        run: |
-          mkdir -p data
-          python - <<'PY'
-          import json
-          import os
-          from datetime import datetime, timezone
-          from pathlib import Path
-
-          payload = {
-              "deployed": True,
-              "verified_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
-              "site_url": os.environ["SITE_URL"],
-              "http_status": int(os.environ["HTTP_STATUS"]),
-              "commit_sha": os.environ["DEPLOYED_SHA"],
-              "content_check": "OcUK RAM Price Tracker"
-          }
-          Path("data/deployment-status.json").write_text(
-              json.dumps(payload, indent=2) + "\n",
-              encoding="utf-8"
-          )
-          PY
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/deployment-status.json
-          git commit -m "chore: record verified Pages deployment"
-          git push
+        uses: actions/deploy-pages@v5
