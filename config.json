@@ -1,0 +1,13 @@
+{
+  "product_name": "Corsair Vengeance RGB EXPO 32GB (2x16GB) DDR5-6000 CL30",
+  "product_url": "https://www.overclockers.co.uk/corsair-vengeance-rgb-expo-32gb-2x16gb-ddr5-pc5-48000c30-6000mhz-dual-cha-my-4du-cs.html",
+  "retailer": "Overclockers UK",
+  "sku": "MY-4DU-CS",
+  "currency": "GBP",
+  "currency_symbol": "£",
+  "notify_on_any_drop": true,
+  "target_price": null,
+  "heartbeat_hours": 24,
+  "request_timeout_seconds": 35,
+  "max_history_entries": 2000
+}
