@@ -1,5 +1,6 @@
 name: Deploy website to GitHub Pages
 
+# A push to main deploys the current static tracker site.
 on:
   push:
     branches: ["main"]
