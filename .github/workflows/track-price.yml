@@ -1,6 +1,14 @@
 name: Track product price
 
 on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/track-price.yml"
+      - "scripts/**"
+      - "tests/**"
+      - "requirements.txt"
+      - "config.json"
   schedule:
     - cron: "17 * * * *"
   workflow_dispatch:
