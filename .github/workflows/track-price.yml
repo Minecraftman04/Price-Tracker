@@ -1,0 +1,85 @@
+name: Track product price
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: price-tracker
+  cancel-in-progress: false
+
+jobs:
+  check-price:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Test price parser
+        run: python -m unittest discover -s tests -v
+
+      - name: Check current price
+        id: check
+        run: python scripts/check_price.py
+
+      - name: Commit updated price data
+        if: steps.check.outputs.data_changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/latest.json data/price-history.json
+          git commit -m "chore: record price £${{ steps.check.outputs.price }}"
+          git push
+
+      - name: Create price-drop notification
+        if: steps.check.outputs.dropped == 'true' || steps.check.outputs.target_reached == 'true'
+        uses: actions/github-script@v8
+        env:
+          CURRENT_PRICE: ${{ steps.check.outputs.price }}
+          PREVIOUS_PRICE: ${{ steps.check.outputs.previous_price }}
+          DROP_AMOUNT: ${{ steps.check.outputs.drop_amount }}
+          DROP_PERCENT: ${{ steps.check.outputs.drop_percent }}
+          IN_STOCK: ${{ steps.check.outputs.in_stock }}
+          PRODUCT_URL: https://www.overclockers.co.uk/corsair-vengeance-rgb-expo-32gb-2x16gb-ddr5-pc5-48000c30-6000mhz-dual-cha-my-4du-cs.html
+          TRACKER_URL: https://minecraftman04.github.io/Price-Tracker/
+        with:
+          script: |
+            const targetReached = '${{ steps.check.outputs.target_reached }}' === 'true';
+            const reason = targetReached ? 'Your target price has been reached.' : 'The price has dropped.';
+            const stockText = process.env.IN_STOCK === 'true' ? 'In stock' : process.env.IN_STOCK === 'false' ? 'Out of stock' : 'Stock status unknown';
+            const body = [
+              `## ${reason}`,
+              '',
+              `**Current price:** £${process.env.CURRENT_PRICE}`,
+              `**Previous price:** £${process.env.PREVIOUS_PRICE}`,
+              `**Drop:** £${process.env.DROP_AMOUNT} (${process.env.DROP_PERCENT}%)`,
+              `**Availability:** ${stockText}`,
+              '',
+              `[Open the product](${process.env.PRODUCT_URL}) · [View price history](${process.env.TRACKER_URL})`,
+              '',
+              '_This issue was created automatically by the hourly price tracker._'
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Price dropped to £${process.env.CURRENT_PRICE}`,
+              body,
+              assignees: [context.repo.owner]
+            });
