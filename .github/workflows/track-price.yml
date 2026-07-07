@@ -52,9 +52,39 @@ jobs:
       - name: Test price parser
         run: python -m unittest discover -s tests -v
 
-      - name: Check current price
+      - name: Check current price or prepare source deployment
         id: check
-        run: python scripts/run_price_check.py
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "push" ]; then
+            python - <<'PY'
+            import json
+            import os
+            from pathlib import Path
+
+            latest = json.loads(Path("data/latest.json").read_text(encoding="utf-8"))
+            previous_price = latest.get("previous_price")
+            stock = latest.get("in_stock")
+            outputs = {
+                "data_changed": "false",
+                "dropped": "false",
+                "target_reached": "false",
+                "price": f"{float(latest['price']):.2f}",
+                "previous_price": "" if previous_price is None else f"{float(previous_price):.2f}",
+                "drop_amount": "0.00",
+                "drop_percent": "0.00",
+                "in_stock": "unknown" if stock is None else str(stock).lower(),
+                "checked_at": latest["checked_at"],
+            }
+            with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as handle:
+                for name, value in outputs.items():
+                    handle.write(f"{name}={value}\n")
+            print("Source push: deploying the stored tracker state without an extra retailer request.")
+            PY
+          else
+            python scripts/run_price_check.py
+          fi
 
       - name: Refresh website check timestamp
         env:
