@@ -158,3 +158,43 @@ jobs:
             echo "GitHub Pages deployment completed, but the published content could not be verified." >&2
             exit 1
           fi
+
+      - name: Record verified Pages deployment
+        if: github.event_name == 'push'
+        uses: actions/github-script@v9
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          CHECKED_AT: ${{ steps.check.outputs.checked_at }}
+        with:
+          script: |
+            const path = 'data/deployment-status.json';
+            let fileSha;
+            try {
+              const existing = await github.rest.repos.getContent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path
+              });
+              if (!Array.isArray(existing.data)) fileSha = existing.data.sha;
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+
+            const status = {
+              deployed: true,
+              verified_at: process.env.CHECKED_AT,
+              site_url: process.env.PAGE_URL,
+              http_status: 200,
+              commit_sha: context.sha,
+              workflow_run_id: context.runId,
+              content_check: 'OcUK RAM Price Tracker and matching latest-check timestamp'
+            };
+
+            await github.rest.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path,
+              message: 'chore: record verified Pages deployment',
+              content: Buffer.from(`${JSON.stringify(status, null, 2)}\n`).toString('base64'),
+              sha: fileSha
+            });
