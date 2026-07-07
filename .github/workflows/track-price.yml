@@ -12,7 +12,6 @@ on:
       - "index.html"
       - "styles.css"
       - "app.js"
-      - "data/**"
       - ".nojekyll"
   schedule:
     - cron: "0,15,30,45 * * * *"
@@ -167,6 +166,7 @@ jobs:
           fi
 
       - name: Record verified Pages deployment
+        if: github.event_name == 'push'
         uses: actions/github-script@v9
         env:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
