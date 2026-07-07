@@ -1,8 +1,9 @@
 {
   "deployed": true,
-  "verified_at": "2026-07-06T00:53:30Z",
+  "verified_at": "2026-07-07T04:19:07Z",
   "site_url": "https://minecraftman04.github.io/Price-Tracker/",
   "http_status": 200,
-  "commit_sha": "8afad412f68d79c28785c3c870354b62b707f98a",
-  "content_check": "OcUK RAM Price Tracker"
+  "commit_sha": "126fcbabeaf72e404f5906f8a86b9d89dc017877",
+  "workflow_run_id": 28900419343,
+  "content_check": "OcUK RAM Price Tracker and matching latest-check timestamp"
 }
