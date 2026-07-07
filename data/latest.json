@@ -6,16 +6,16 @@
   "currency": "GBP",
   "currency_symbol": "£",
   "price": 479.99,
-  "previous_price": null,
-  "change": null,
-  "change_percent": null,
+  "previous_price": 479.99,
+  "change": 0.0,
+  "change_percent": 0.0,
   "lowest_price": 479.99,
   "highest_price": 479.99,
   "in_stock": true,
-  "checked_at": "2026-07-06T00:37:50Z",
+  "checked_at": "2026-07-07T04:19:07Z",
   "first_seen_at": "2026-07-06T00:37:50Z",
-  "history_count": 1,
+  "history_count": 2,
   "target_price": null,
   "notify_on_any_drop": true,
-  "source": "Initial verified check"
+  "source": "Automated GitHub Actions check"
 }
