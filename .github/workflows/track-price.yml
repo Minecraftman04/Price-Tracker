@@ -26,7 +26,7 @@ permissions:
 
 concurrency:
   group: price-tracker-pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   check-price:
@@ -160,7 +160,6 @@ jobs:
           fi
 
       - name: Record verified Pages deployment
-        if: github.event_name == 'push'
         uses: actions/github-script@v9
         env:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
@@ -169,15 +168,24 @@ jobs:
           script: |
             const path = 'data/deployment-status.json';
             let fileSha;
+            let existingStatus;
             try {
               const existing = await github.rest.repos.getContent({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 path
               });
-              if (!Array.isArray(existing.data)) fileSha = existing.data.sha;
+              if (!Array.isArray(existing.data)) {
+                fileSha = existing.data.sha;
+                existingStatus = JSON.parse(Buffer.from(existing.data.content, 'base64').toString('utf8'));
+              }
             } catch (error) {
               if (error.status !== 404) throw error;
+            }
+
+            if (existingStatus?.commit_sha === context.sha) {
+              core.info(`Deployment for ${context.sha} is already recorded.`);
+              return;
             }
 
             const status = {
