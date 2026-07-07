@@ -5,19 +5,21 @@ A free, automated price tracker for:
 **Corsair Vengeance RGB EXPO 32GB (2x16GB) DDR5-6000 CL30**  
 OcUK SKU: `MY-4DU-CS`
 
-The tracker checks the product page hourly, records price/stock changes, displays a price-history website, and creates a GitHub issue assigned to the repository owner whenever the price drops.
+The tracker checks the product page every 15 minutes, records price/stock changes, displays a price-history website, and creates a GitHub issue assigned to the repository owner whenever the price drops.
 
 ## Website
 
-After GitHub Pages is enabled, the tracker is available at:
+The tracker is available at:
 
 `https://minecraftman04.github.io/Price-Tracker/`
+
+The GitHub Pages website is redeployed after every successful 15-minute check, so its latest-check timestamp stays current even when the price has not changed.
 
 ## One-time setup
 
 1. Open **Settings → Pages** in this repository.
 2. Under **Build and deployment**, select **GitHub Actions** as the source.
-3. Open **Actions → Track product price** and choose **Run workflow** for an immediate first automated check.
+3. Open **Actions → Track product price** and choose **Run workflow** for an immediate first automated check and deployment.
 4. Make sure GitHub notifications for assigned issues are enabled. The price-drop issue is assigned to `Minecraftman04`, so it can arrive by GitHub email and/or the GitHub mobile app according to account notification settings.
 
 ## Alert behaviour
@@ -41,8 +43,8 @@ To also use a target, set a number such as:
 
 - `data/latest.json` contains the latest recorded state.
 - `data/price-history.json` contains price history.
-- A record is added on a price/stock change, or once every 24 hours as a heartbeat.
-- The GitHub Action still checks hourly, but avoiding hourly commits keeps the repository history manageable.
+- A history record is added on a price/stock change, or once every 24 hours as a heartbeat.
+- The website is still refreshed every 15 minutes, but avoiding a commit for every unchanged check keeps the repository history manageable.
 
 ## Local test
 
