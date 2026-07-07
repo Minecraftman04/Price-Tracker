@@ -9,22 +9,32 @@ on:
       - "tests/**"
       - "requirements.txt"
       - "config.json"
+      - "index.html"
+      - "styles.css"
+      - "app.js"
+      - "data/**"
+      - ".nojekyll"
   schedule:
-    - cron: "17 * * * *"
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
   issues: write
+  pages: write
+  id-token: write
 
 concurrency:
-  group: price-tracker
+  group: price-tracker-pages
   cancel-in-progress: false
 
 jobs:
   check-price:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Check out repository
@@ -45,6 +55,25 @@ jobs:
       - name: Check current price
         id: check
         run: python scripts/run_price_check.py
+
+      - name: Refresh website check timestamp
+        env:
+          CHECKED_AT: ${{ steps.check.outputs.checked_at }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("data/latest.json")
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          payload["checked_at"] = os.environ["CHECKED_AT"]
+          payload["source"] = "Automated GitHub Actions check"
+          path.write_text(
+              json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
+              encoding="utf-8",
+          )
+          PY
 
       - name: Commit updated price data
         if: steps.check.outputs.data_changed == 'true'
@@ -82,7 +111,7 @@ jobs:
               '',
               `[Open the product](${process.env.PRODUCT_URL}) · [View price history](${process.env.TRACKER_URL})`,
               '',
-              '_This issue was created automatically by the hourly price tracker._'
+              '_This issue was created automatically by the 15-minute price tracker._'
             ].join('\n');
 
             await github.rest.issues.create({
@@ -92,3 +121,40 @@ jobs:
               body,
               assignees: [context.repo.owner]
             });
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: "."
+
+      - name: Deploy website to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
+
+      - name: Verify published website
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          CHECKED_AT: ${{ steps.check.outputs.checked_at }}
+        run: |
+          verified=false
+          for attempt in $(seq 1 12); do
+            cache_bust="deployment=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${attempt}"
+            if curl --fail --silent --show-error --location --max-time 20 "${PAGE_URL}?${cache_bust}" -o /tmp/price-tracker-index.html \
+              && curl --fail --silent --show-error --location --max-time 20 "${PAGE_URL%/}/data/latest.json?${cache_bust}" -o /tmp/price-tracker-latest.json \
+              && grep -Fq '<title>OcUK RAM Price Tracker</title>' /tmp/price-tracker-index.html \
+              && python -c 'import json, pathlib, sys; payload=json.loads(pathlib.Path(sys.argv[2]).read_text()); raise SystemExit(0 if payload.get("checked_at") == sys.argv[1] else 1)' "$CHECKED_AT" /tmp/price-tracker-latest.json; then
+              verified=true
+              echo "Published website and latest check data verified at ${PAGE_URL}"
+              break
+            fi
+            echo "Published content is not ready yet (attempt ${attempt}/12)."
+            sleep 10
+          done
+
+          if [ "$verified" != true ]; then
+            echo "GitHub Pages deployment completed, but the published content could not be verified." >&2
+            exit 1
+          fi
