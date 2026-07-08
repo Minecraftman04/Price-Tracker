@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
+  <script src="site-refresh-labels.js" defer></script>
 </head>
 <body>
   <div class="ambient ambient-one"></div>
@@ -60,7 +61,7 @@
       <article class="metric panel">
         <span>Checks recorded</span>
         <strong id="history-count">—</strong>
-        <small>Changes plus daily heartbeat</small>
+        <small>Changes plus 15-minute checks</small>
       </article>
       <article class="metric panel">
         <span>Alert rule</span>
@@ -108,7 +109,7 @@
         <h2>15-minute checks, useful alerts</h2>
         <ol>
           <li><span>1</span><p>GitHub Actions checks the retailer every 15 minutes.</p></li>
-          <li><span>2</span><p>The website is redeployed after every successful check, while price history is stored only for changes and daily heartbeats.</p></li>
+          <li><span>2</span><p>The website is redeployed after every successful check, and the latest activity table records each scheduled 15-minute check.</p></li>
           <li><span>3</span><p>A price decrease creates an issue assigned to the repository owner.</p></li>
         </ol>
         <p class="fine-print">Retail prices can change at any time. Always confirm the basket price before purchasing.</p>
