@@ -1,8 +1,9 @@
-const state = { chartPoints: [] };
+const state = { chartPoints: [], history: [], latest: null, loadInProgress: false };
 const el = (id) => document.getElementById(id);
 const money = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' });
 const dateTime = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/London' });
 const shortDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Europe/London' });
+const DATA_REFRESH_INTERVAL_MS = 60_000;
 
 function formatMoney(value) {
   return Number.isFinite(Number(value)) ? money.format(Number(value)) : '—';
@@ -23,7 +24,14 @@ function relativeAge(value) {
   return `${Math.round(hours / 24)} days ago`;
 }
 
+function refreshRelativeTime() {
+  if (!state.latest) return;
+  el('checked-badge').textContent = `Checked ${relativeAge(state.latest.checked_at)}`;
+  el('footer-updated').textContent = `Last check: ${formatDate(state.latest.checked_at)}`;
+}
+
 function renderLatest(latest) {
+  state.latest = latest;
   el('product-name').textContent = latest.product_name;
   el('product-link').href = latest.product_url;
   el('current-price').textContent = formatMoney(latest.price);
@@ -43,8 +51,7 @@ function renderLatest(latest) {
     stockBadge.textContent = 'Stock status unknown';
   }
 
-  el('checked-badge').textContent = `Recorded ${relativeAge(latest.checked_at)}`;
-  el('footer-updated').textContent = `Last record: ${formatDate(latest.checked_at)}`;
+  refreshRelativeTime();
 
   const movement = el('price-movement');
   movement.className = 'movement neutral';
@@ -218,7 +225,10 @@ function setupTooltip() {
 }
 
 async function loadTracker() {
+  if (state.loadInProgress) return;
+  state.loadInProgress = true;
   const cacheBust = `?v=${Date.now()}`;
+
   try {
     const [latestResponse, historyResponse] = await Promise.all([
       fetch(`data/latest.json${cacheBust}`, { cache: 'no-store' }),
@@ -226,21 +236,34 @@ async function loadTracker() {
     ]);
     if (!latestResponse.ok || !historyResponse.ok) throw new Error('Tracker data request failed');
     const [latest, history] = await Promise.all([latestResponse.json(), historyResponse.json()]);
+    state.history = history;
     renderLatest(latest);
     renderTable(history);
     drawChart(history);
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => drawChart(history), 120);
-    });
+    el('error-banner').hidden = true;
   } catch (error) {
     console.error(error);
-    el('error-banner').hidden = false;
-    el('stock-badge').textContent = 'Data unavailable';
-    el('stock-badge').classList.remove('loading');
+    if (!state.latest) {
+      el('error-banner').hidden = false;
+      el('stock-badge').textContent = 'Data unavailable';
+      el('stock-badge').classList.remove('loading');
+    }
+  } finally {
+    state.loadInProgress = false;
   }
 }
 
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => drawChart(state.history), 120);
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') loadTracker();
+});
+
 setupTooltip();
 loadTracker();
+setInterval(loadTracker, DATA_REFRESH_INTERVAL_MS);
+setInterval(refreshRelativeTime, 60_000);
