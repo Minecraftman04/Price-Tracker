@@ -14,7 +14,9 @@ on:
       - "app.js"
       - ".nojekyll"
   schedule:
-    - cron: "0,15,30,45 * * * *"
+    # Keep the 15-minute cadence away from the busiest top-of-hour minute,
+    # where GitHub may delay or drop scheduled workflow events.
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -25,7 +27,9 @@ permissions:
 
 concurrency:
   group: price-tracker-pages
-  cancel-in-progress: true
+  # Never cancel an in-progress price check or Pages deployment because a
+  # source push happened while it was running.
+  cancel-in-progress: false
 
 jobs:
   check-price:
@@ -51,16 +55,9 @@ jobs:
       - name: Test price parser
         run: python -m unittest discover -s tests -v
 
-      - name: Check current price or prepare source deployment
+      - name: Check current price
         id: check
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-        run: |
-          if [ "$EVENT_NAME" = "push" ]; then
-            python scripts/prepare_source_deployment.py
-          else
-            python scripts/run_price_check.py
-          fi
+        run: python scripts/run_price_check.py
 
       - name: Refresh website check timestamp
         env:
