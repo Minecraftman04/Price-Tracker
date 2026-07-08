@@ -77,7 +77,7 @@ function renderLatest(latest) {
 }
 
 function reasonLabel(reason = '') {
-  const labels = { initial: 'Initial', heartbeat: 'Daily check', 'price-change': 'Price changed', 'stock-change': 'Stock changed' };
+  const labels = { initial: 'Initial', heartbeat: '15-minute check', 'price-change': 'Price changed', 'stock-change': 'Stock changed' };
   return reason.split(',').map((item) => labels[item] || item || 'Check').join(' + ');
 }
 
