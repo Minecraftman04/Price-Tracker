@@ -75,5 +75,12 @@
     "currency": "GBP",
     "in_stock": true,
     "reason": "heartbeat"
+  },
+  {
+    "timestamp": "2026-07-09T14:10:25Z",
+    "price": 479.99,
+    "currency": "GBP",
+    "in_stock": true,
+    "reason": "heartbeat"
   }
 ]
