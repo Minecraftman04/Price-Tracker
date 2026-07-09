@@ -12,9 +12,9 @@
   "lowest_price": 479.99,
   "highest_price": 479.99,
   "in_stock": true,
-  "checked_at": "2026-07-08T23:48:00Z",
+  "checked_at": "2026-07-09T01:19:21Z",
   "first_seen_at": "2026-07-06T00:37:50Z",
-  "history_count": 7,
+  "history_count": 8,
   "target_price": null,
   "notify_on_any_drop": true,
   "source": "Automated GitHub Actions check"
