@@ -56,7 +56,7 @@ jobs:
 
       - name: Check all product prices
         id: check
-        run: python scripts/check_price.py
+        run: python scripts/run_price_check.py
 
       - name: Commit updated price data
         if: steps.check.outputs.data_changed == 'true'
