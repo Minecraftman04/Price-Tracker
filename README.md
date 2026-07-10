@@ -1,52 +1,56 @@
-# Overclockers UK Price Tracker
+# Basket Price Tracker
 
-A free, automated price tracker for:
+A free GitHub Actions price tracker for a Bambu Lab UK basket plus the repository’s original Overclockers UK RAM product.
 
-**Corsair Vengeance RGB EXPO 32GB (2x16GB) DDR5-6000 CL30**  
-OcUK SKU: `MY-4DU-CS`
+## Tracked Bambu basket
 
-The tracker checks the product page every 15 minutes, records price/stock changes, displays a price-history website, and creates a GitHub issue assigned to the repository owner whenever the price drops.
+The uploaded basket snapshot from **10 July 2026** contains:
+
+- Bambu Lab X2D — X2D AMS Combo
+- Bambu Hotend — Standard Flow, X2D, 0.2 mm stainless steel
+- Tungsten Carbide Hotend — High Flow, X2D, 0.4 mm
+- PLA Basic — Black (10101), filament with spool, 1 kg
+- Vision Encoder — X2D
+- Filament Track Switch — X2D
+- CyberBrick Time-lapse Kit — 1500 mm 6-pin cable, ZL021
+- Mag-Alloy Scraper
+- TPU Feed Assist Module — saved and tracked even though it was out of stock
+
+The eight purchasable items total **£1,001.59** in the uploaded basket. Their displayed original prices total **£1,043.93**, a snapshot saving of **£42.34**. The £45.99 TPU Feed Assist Module is shown separately because it was out of stock and excluded from the purchasable subtotal.
 
 ## Website
 
-The tracker is available at:
-
 `https://minecraftman04.github.io/Price-Tracker/`
 
-The GitHub Pages website is redeployed after every successful 15-minute check, so its latest-check timestamp stays current even when the price has not changed.
+The site shows:
 
-## One-time setup
+- the uploaded basket price separately from the latest store-page price;
+- all tracked products in one responsive dashboard;
+- per-product stock, lowest/highest price and history;
+- warnings when a retailer blocks a live check, while retaining the last known price;
+- GitHub issue alerts for genuine product-price drops.
 
-1. Open **Settings → Pages** in this repository.
-2. Under **Build and deployment**, select **GitHub Actions** as the source.
-3. Open **Actions → Track product price** and choose **Run workflow** for an immediate first automated check and deployment.
-4. Make sure GitHub notifications for assigned issues are enabled. The price-drop issue is assigned to `Minecraftman04`, so it can arrive by GitHub email and/or the GitHub mobile app according to account notification settings.
+## Automation
 
-## Alert behaviour
+`.github/workflows/track-price.yml` checks each product independently. A failure on one retailer page does not stop the remaining products or the Pages deployment.
 
-The default in `config.json` is:
+The tracker runs every five minutes but records a heartbeat row only when the configured 15-minute window is due. Product data is stored in:
 
-```json
-"notify_on_any_drop": true,
-"target_price": null
-```
+- `data/latest.json`
+- `data/price-history.json`
+- `data/deployment-status.json`
 
-This creates one issue when the current price becomes lower than the previous recorded price. It does not repeatedly alert while the price remains unchanged.
+## Configuration
 
-To also use a target, set a number such as:
+Products and basket snapshot values are defined in `config.json`. Each product supports:
 
-```json
-"target_price": 149.99
-```
+- `initial_price` and `initial_in_stock`
+- `basket_price`, `basket_original_price` and `basket_status`
+- `target_price`
+- `notify_on_any_drop`
+- a variant description used to select the most relevant price when a product page contains several variants.
 
-## How data is stored
-
-- `data/latest.json` contains the latest recorded state.
-- `data/price-history.json` contains price history.
-- A history record is added on a price/stock change, or once every 24 hours as a heartbeat.
-- The website is still refreshed every 15 minutes, but avoiding a commit for every unchanged check keeps the repository history manageable.
-
-## Local test
+## Local validation
 
 ```bash
 python -m pip install -r requirements.txt
@@ -54,6 +58,4 @@ python -m unittest discover -s tests -v
 python scripts/check_price.py
 ```
 
-## Notes
-
-Retailer HTML can change. The parser checks structured product data, price metadata, microdata, data attributes, and OcUK's visible VAT price pattern. Parser tests run before every live check so obvious regressions fail safely instead of storing a random finance price.
+Retailer HTML can change and basket discounts can depend on the complete bundle. Always confirm the final checkout total before buying.

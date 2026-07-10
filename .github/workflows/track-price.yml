@@ -1,4 +1,4 @@
-name: Track product price
+name: Track basket prices
 
 on:
   push:
@@ -13,10 +13,10 @@ on:
       - "styles.css"
       - "app.js"
       - ".nojekyll"
+      - "data/latest.json"
+      - "data/price-history.json"
   schedule:
-    # GitHub scheduled workflow events can be delayed or dropped during high load.
-    # Run every 5 minutes and let the checker record a history row only when the
-    # 15-minute heartbeat window is due, giving several chances to hit each slot.
+    # Several chances are useful because GitHub scheduled jobs can be delayed.
     - cron: "*/5 * * * *"
   workflow_dispatch:
 
@@ -27,18 +27,16 @@ permissions:
   id-token: write
 
 concurrency:
-  group: price-tracker-pages
-  # Never cancel an in-progress price check or Pages deployment because a
-  # source push happened while it was running.
+  group: basket-price-tracker-pages
   cancel-in-progress: false
 
 jobs:
-  check-price:
+  check-prices:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Check out repository
@@ -56,28 +54,9 @@ jobs:
       - name: Test price parser
         run: python -m unittest discover -s tests -v
 
-      - name: Check current price
+      - name: Check all product prices
         id: check
-        run: python scripts/run_price_check.py
-
-      - name: Refresh website check timestamp
-        env:
-          CHECKED_AT: ${{ steps.check.outputs.checked_at }}
-        run: |
-          python - <<'PY'
-          import json
-          import os
-          from pathlib import Path
-
-          path = Path("data/latest.json")
-          payload = json.loads(path.read_text(encoding="utf-8"))
-          payload["checked_at"] = os.environ["CHECKED_AT"]
-          payload["source"] = "Automated GitHub Actions check"
-          path.write_text(
-              json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
-              encoding="utf-8",
-          )
-          PY
+        run: python scripts/check_price.py
 
       - name: Commit updated price data
         if: steps.check.outputs.data_changed == 'true'
@@ -85,46 +64,44 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/latest.json data/price-history.json
-          git commit -m "chore: record price £${{ steps.check.outputs.price }}"
+          git commit -m "chore: record basket price checks"
           git pull --rebase origin main
           git push
 
-      - name: Create price-drop notification
-        if: steps.check.outputs.dropped == 'true' || steps.check.outputs.target_reached == 'true'
+      - name: Create price-drop notifications
+        if: steps.check.outputs.alerts_json != '[]'
         uses: actions/github-script@v9
         env:
-          CURRENT_PRICE: ${{ steps.check.outputs.price }}
-          PREVIOUS_PRICE: ${{ steps.check.outputs.previous_price }}
-          DROP_AMOUNT: ${{ steps.check.outputs.drop_amount }}
-          DROP_PERCENT: ${{ steps.check.outputs.drop_percent }}
-          IN_STOCK: ${{ steps.check.outputs.in_stock }}
-          PRODUCT_URL: https://www.overclockers.co.uk/corsair-vengeance-rgb-expo-32gb-2x16gb-ddr5-pc5-48000c30-6000mhz-dual-cha-my-4du-cs.html
+          ALERTS_JSON: ${{ steps.check.outputs.alerts_json }}
           TRACKER_URL: https://minecraftman04.github.io/Price-Tracker/
         with:
           script: |
-            const targetReached = '${{ steps.check.outputs.target_reached }}' === 'true';
-            const reason = targetReached ? 'Your target price has been reached.' : 'The price has dropped.';
-            const stockText = process.env.IN_STOCK === 'true' ? 'In stock' : process.env.IN_STOCK === 'false' ? 'Out of stock' : 'Stock status unknown';
-            const body = [
-              `## ${reason}`,
-              '',
-              `**Current price:** £${process.env.CURRENT_PRICE}`,
-              `**Previous price:** £${process.env.PREVIOUS_PRICE}`,
-              `**Drop:** £${process.env.DROP_AMOUNT} (${process.env.DROP_PERCENT}%)`,
-              `**Availability:** ${stockText}`,
-              '',
-              `[Open the product](${process.env.PRODUCT_URL}) · [View price history](${process.env.TRACKER_URL})`,
-              '',
-              '_This issue was created automatically by the 15-minute price tracker._'
-            ].join('\n');
+            const alerts = JSON.parse(process.env.ALERTS_JSON || '[]');
+            for (const alert of alerts) {
+              const reason = alert.target_reached ? 'Your target price has been reached.' : 'The price has dropped.';
+              const stockText = alert.in_stock === true ? 'In stock' : alert.in_stock === false ? 'Out of stock' : 'Stock status unknown';
+              const body = [
+                `## ${reason}`,
+                '',
+                `**Product:** ${alert.product_name}`,
+                `**Current price:** £${alert.current_price}`,
+                `**Previous price:** £${alert.previous_price}`,
+                `**Drop:** £${alert.drop_amount} (${alert.drop_percent}%)`,
+                `**Availability:** ${stockText}`,
+                '',
+                `[Open the product](${alert.product_url}) · [View the basket tracker](${process.env.TRACKER_URL})`,
+                '',
+                '_This issue was created automatically by the multi-product price tracker._'
+              ].join('\n');
 
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `Price dropped to £${process.env.CURRENT_PRICE}`,
-              body,
-              assignees: [context.repo.owner]
-            });
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `${alert.product_name} dropped to £${alert.current_price}`,
+                body,
+                assignees: [context.repo.owner]
+              });
+            }
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
@@ -148,10 +125,10 @@ jobs:
             cache_bust="deployment=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${attempt}"
             if curl --fail --silent --show-error --location --max-time 20 "${PAGE_URL}?${cache_bust}" -o /tmp/price-tracker-index.html \
               && curl --fail --silent --show-error --location --max-time 20 "${PAGE_URL%/}/data/latest.json?${cache_bust}" -o /tmp/price-tracker-latest.json \
-              && grep -Fq '<title>OcUK RAM Price Tracker</title>' /tmp/price-tracker-index.html \
-              && python -c 'import json, pathlib, sys; payload=json.loads(pathlib.Path(sys.argv[2]).read_text()); raise SystemExit(0 if payload.get("checked_at") == sys.argv[1] else 1)' "$CHECKED_AT" /tmp/price-tracker-latest.json; then
+              && grep -Fq '<title>Basket Price Tracker</title>' /tmp/price-tracker-index.html \
+              && python -c 'import json, pathlib, sys; payload=json.loads(pathlib.Path(sys.argv[2]).read_text()); raise SystemExit(0 if payload.get("generated_at") == sys.argv[1] and len(payload.get("products", [])) >= 10 else 1)' "$CHECKED_AT" /tmp/price-tracker-latest.json; then
               verified=true
-              echo "Published website and latest check data verified at ${PAGE_URL}"
+              echo "Published basket tracker and current multi-product data verified at ${PAGE_URL}"
               break
             fi
             echo "Published content is not ready yet (attempt ${attempt}/12)."
@@ -169,6 +146,8 @@ jobs:
         env:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
           CHECKED_AT: ${{ steps.check.outputs.checked_at }}
+          PRODUCT_COUNT: ${{ steps.check.outputs.product_count }}
+          FAILED_CHECKS: ${{ steps.check.outputs.failed_checks }}
         with:
           script: |
             const path = 'data/deployment-status.json';
@@ -200,7 +179,9 @@ jobs:
               http_status: 200,
               commit_sha: context.sha,
               workflow_run_id: context.runId,
-              content_check: 'OcUK RAM Price Tracker and matching latest-check timestamp'
+              product_count: Number(process.env.PRODUCT_COUNT),
+              failed_checks: Number(process.env.FAILED_CHECKS),
+              content_check: 'Basket Price Tracker with at least 10 products and matching generated timestamp'
             };
 
             await github.rest.repos.createOrUpdateFileContents({
