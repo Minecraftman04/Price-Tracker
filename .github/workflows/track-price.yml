@@ -14,9 +14,10 @@ on:
       - "app.js"
       - ".nojekyll"
   schedule:
-    # Keep the 15-minute cadence away from the busiest top-of-hour minute,
-    # where GitHub may delay or drop scheduled workflow events.
-    - cron: "7,22,37,52 * * * *"
+    # GitHub scheduled workflow events can be delayed or dropped during high load.
+    # Run every 5 minutes and let the checker record a history row only when the
+    # 15-minute heartbeat window is due, giving several chances to hit each slot.
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
