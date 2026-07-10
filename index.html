@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090b12">
-  <meta name="description" content="Automated price history and drop alerts for Corsair Vengeance RGB DDR5 memory at Overclockers UK.">
-  <title>OcUK RAM Price Tracker</title>
+  <meta name="theme-color" content="#07110e">
+  <meta name="description" content="Automated multi-product price tracking for a Bambu Lab UK basket and other saved products.">
+  <title>Basket Price Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -18,10 +18,10 @@
 
   <main class="shell">
     <header class="topbar">
-      <a class="brand" href="./" aria-label="Price Tracker home">
+      <a class="brand" href="./" aria-label="Basket Price Tracker home">
         <span class="brand-mark" aria-hidden="true">£</span>
         <span>
-          <strong>Price Tracker</strong>
+          <strong>Basket Price Tracker</strong>
           <small>Automated by GitHub Actions</small>
         </span>
       </a>
@@ -30,55 +30,97 @@
 
     <section class="hero panel">
       <div class="hero-copy">
-        <div class="eyebrow">OVERCLOCKERS UK · SKU MY-4DU-CS</div>
-        <h1 id="product-name">Corsair Vengeance RGB EXPO 32GB DDR5-6000 CL30</h1>
-        <p class="product-summary">2 × 16GB · AMD EXPO · RGB · 6000MT/s · CL30</p>
+        <div class="eyebrow">BAMBU LAB UK BASKET · MULTI-PRODUCT TRACKING</div>
+        <h1>Watch the whole basket, not just one price.</h1>
+        <p class="hero-summary">The eight purchasable basket items and the out-of-stock TPU Feed Assist Module are tracked alongside the original RAM item.</p>
         <div class="status-row">
-          <span id="stock-badge" class="badge loading">Checking stock…</span>
-          <span id="checked-badge" class="badge muted">Loading latest check…</span>
+          <span id="checked-badge" class="badge loading">Loading latest checks…</span>
+          <span id="health-badge" class="badge muted">Checking tracker health…</span>
         </div>
       </div>
-      <div class="hero-price">
-        <span class="price-label">Current price</span>
-        <strong id="current-price">—</strong>
-        <span id="price-movement" class="movement neutral">Loading price data</span>
-        <a id="product-link" class="buy-button" href="https://www.overclockers.co.uk/corsair-vengeance-rgb-expo-32gb-2x16gb-ddr5-pc5-48000c30-6000mhz-dual-cha-my-4du-cs.html" target="_blank" rel="noreferrer">Open at Overclockers UK <span aria-hidden="true">↗</span></a>
+      <div class="hero-total">
+        <span class="price-label">Basket subtotal</span>
+        <strong id="basket-subtotal">—</strong>
+        <span id="basket-saving" class="saving">Loading basket snapshot</span>
+        <div class="hero-total-meta">
+          <span><b id="basket-items">—</b> purchasable items</span>
+          <span><b id="saved-items">—</b> saved out-of-stock item</span>
+        </div>
       </div>
     </section>
 
-    <section class="metric-grid" aria-label="Price statistics">
+    <section class="metric-grid" aria-label="Basket statistics">
       <article class="metric panel">
-        <span>Lowest recorded</span>
-        <strong id="lowest-price">—</strong>
-        <small>Best price in this tracker</small>
+        <span>Displayed original total</span>
+        <strong id="basket-original">—</strong>
+        <small>Before basket and sale discounts</small>
       </article>
       <article class="metric panel">
-        <span>Highest recorded</span>
-        <strong id="highest-price">—</strong>
-        <small>Highest observed price</small>
+        <span>Current basket saving</span>
+        <strong id="basket-savings">—</strong>
+        <small>Based on the uploaded basket snapshot</small>
       </article>
       <article class="metric panel">
-        <span>Checks recorded</span>
-        <strong id="history-count">—</strong>
-        <small>Changes plus 15-minute checks</small>
+        <span>Products tracked</span>
+        <strong id="product-count">—</strong>
+        <small>Basket products plus existing tracker</small>
       </article>
       <article class="metric panel">
-        <span>Alert rule</span>
-        <strong id="alert-rule">Any drop</strong>
-        <small id="alert-detail">GitHub issue assigned to the owner</small>
+        <span>Live-check issues</span>
+        <strong id="failed-checks">—</strong>
+        <small>Last known prices remain visible if a shop blocks a check</small>
       </article>
     </section>
 
-    <section class="chart-panel panel">
+    <section class="catalogue panel">
       <div class="section-heading">
         <div>
+          <span class="eyebrow">TRACKED PRODUCTS</span>
+          <h2>Basket and saved items</h2>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter tracked products">
+          <button class="filter active" data-filter="all">All</button>
+          <button class="filter" data-filter="selected">In basket</button>
+          <button class="filter" data-filter="out-of-stock">Out of stock</button>
+          <button class="filter" data-filter="none">Other</button>
+        </div>
+      </div>
+      <div id="product-grid" class="product-grid">
+        <div class="loading-card">Loading products…</div>
+      </div>
+    </section>
+
+    <section id="detail-panel" class="detail-panel panel">
+      <div class="detail-header">
+        <div class="detail-product">
+          <div id="detail-image" class="detail-image placeholder" aria-hidden="true">£</div>
+          <div>
+            <span id="detail-eyebrow" class="eyebrow">SELECTED PRODUCT</span>
+            <h2 id="detail-name">Loading…</h2>
+            <p id="detail-variant" class="detail-variant"></p>
+          </div>
+        </div>
+        <a id="detail-link" class="buy-button" href="#" target="_blank" rel="noreferrer">Open product <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <div class="detail-metrics">
+        <div><span>Current store price</span><strong id="detail-price">—</strong></div>
+        <div><span>Basket price</span><strong id="detail-basket-price">—</strong></div>
+        <div><span>Lowest recorded</span><strong id="detail-lowest">—</strong></div>
+        <div><span>Availability</span><strong id="detail-stock">—</strong></div>
+      </div>
+
+      <div id="detail-warning" class="detail-warning" hidden></div>
+
+      <div class="chart-heading">
+        <div>
           <span class="eyebrow">PRICE HISTORY</span>
-          <h2>Recorded price over time</h2>
+          <h2 id="chart-title">Recorded store price</h2>
         </div>
         <div class="chart-key"><span></span> GBP including VAT</div>
       </div>
       <div class="chart-wrap">
-        <canvas id="price-chart" role="img" aria-label="Line chart showing the product price history"></canvas>
+        <canvas id="price-chart" role="img" aria-label="Line chart showing selected product price history"></canvas>
         <div id="chart-tooltip" class="chart-tooltip" hidden></div>
       </div>
     </section>
@@ -88,14 +130,12 @@
         <div class="section-heading compact">
           <div>
             <span class="eyebrow">RECENT ACTIVITY</span>
-            <h2>Latest recorded checks</h2>
+            <h2 id="activity-title">Latest recorded checks</h2>
           </div>
         </div>
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr><th>Date</th><th>Price</th><th>Stock</th><th>Reason</th></tr>
-            </thead>
+            <thead><tr><th>Date</th><th>Price</th><th>Stock</th><th>Reason</th></tr></thead>
             <tbody id="history-table">
               <tr><td colspan="4" class="empty-cell">Loading history…</td></tr>
             </tbody>
@@ -105,13 +145,13 @@
 
       <aside class="panel info-panel">
         <span class="eyebrow">HOW IT WORKS</span>
-        <h2>15-minute checks, useful alerts</h2>
+        <h2>One dashboard, independent checks</h2>
         <ol>
-          <li><span>1</span><p>GitHub Actions checks the retailer every 15 minutes.</p></li>
-          <li><span>2</span><p>The website is redeployed after every successful check, and the latest activity table records every scheduled 15-minute check.</p></li>
-          <li><span>3</span><p>A price decrease creates an issue assigned to the repository owner.</p></li>
+          <li><span>1</span><p>Each product page is checked independently, so one unavailable page does not stop the rest of the basket.</p></li>
+          <li><span>2</span><p>The uploaded basket prices remain visible separately from each product’s latest store-page price.</p></li>
+          <li><span>3</span><p>A genuine price decrease can create a GitHub issue assigned to the repository owner.</p></li>
         </ol>
-        <p class="fine-print">Retail prices can change at any time. Always confirm the basket price before purchasing.</p>
+        <p class="fine-print">Basket discounts may depend on buying the X2D and accessories together. Confirm the final checkout total before purchasing.</p>
       </aside>
     </section>
 
@@ -120,7 +160,7 @@
     </div>
 
     <footer>
-      <span>Independent tracker · Not affiliated with Corsair or Overclockers UK</span>
+      <span>Independent tracker · Not affiliated with Bambu Lab, Corsair or Overclockers UK</span>
       <span id="footer-updated"></span>
     </footer>
   </main>
