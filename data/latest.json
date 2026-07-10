@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-10T14:54:23Z",
+  "generated_at": "2026-07-10T14:59:02Z",
   "currency": "GBP",
   "currency_symbol": "£",
   "basket": {
@@ -13,7 +13,7 @@
     "saved_out_of_stock_value": 45.99
   },
   "product_count": 10,
-  "failed_checks": 10,
+  "failed_checks": 9,
   "products": [
     {
       "id": "bambu-x2d-combo",
@@ -33,7 +33,7 @@
       "lowest_price": 769.0,
       "highest_price": 769.0,
       "in_stock": true,
-      "checked_at": "2026-07-10T14:54:23Z",
+      "checked_at": "2026-07-10T14:59:02Z",
       "first_seen_at": "2026-07-10T14:36:09Z",
       "history_count": 2,
       "target_price": null,
@@ -42,7 +42,7 @@
       "basket_original_price": 769.0,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "retailer returned a challenge or incomplete page"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-hotend-02",
@@ -62,7 +62,7 @@
       "lowest_price": 15.99,
       "highest_price": 15.99,
       "in_stock": true,
-      "checked_at": "2026-07-10T14:54:23Z",
+      "checked_at": "2026-07-10T14:59:02Z",
       "first_seen_at": "2026-07-10T14:36:09Z",
       "history_count": 2,
       "target_price": null,
@@ -71,7 +71,7 @@
       "basket_original_price": 15.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "404 Client Error: Not Found for url: https://us.store.bambulab.com/products/bambu-hotend-h2-p2s-x2d"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-tungsten-hotend-04",
@@ -91,7 +91,7 @@
       "lowest_price": 82.99,
       "highest_price": 82.99,
       "in_stock": true,
-      "checked_at": "2026-07-10T14:54:23Z",
+      "checked_at": "2026-07-10T14:59:02Z",
       "first_seen_at": "2026-07-10T14:36:09Z",
       "history_count": 2,
       "target_price": null,
@@ -100,7 +100,7 @@
       "basket_original_price": 82.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "404 Client Error: Not Found for url: https://us.store.bambulab.com/products/tungsten-carbide-hotend-h2-p2s-x2d"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-pla-basic-black",
@@ -120,7 +120,7 @@
       "lowest_price": 20.99,
       "highest_price": 20.99,
       "in_stock": true,
-      "checked_at": "2026-07-10T14:54:23Z",
+      "checked_at": "2026-07-10T14:59:02Z",
       "first_seen_at": "2026-07-10T14:36:09Z",
       "history_count": 2,
       "target_price": null,
@@ -129,7 +129,7 @@
       "basket_original_price": 20.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "retailer returned a challenge or incomplete page"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-vision-encoder",
@@ -149,7 +149,7 @@
       "lowest_price": 63.99,
       "highest_price": 63.99,
       "in_stock": true,
-      "checked_at": "2026-07-10T14:54:23Z",
+      "checked_at": "2026-07-10T14:59:02Z",
       "first_seen_at": "2026-07-10T14:36:09Z",
       "history_count": 2,
       "target_price": null,
@@ -158,7 +158,7 @@
       "basket_original_price": 63.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "retailer returned a challenge or incomplete page"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-filament-track-switch",
@@ -178,7 +178,7 @@
       "lowest_price": 52.99,
       "highest_price": 52.99,
       "in_stock": true,
-      "checked_at": "2026-07-10T14:54:23Z",
+      "checked_at": "2026-07-10T14:59:02Z",
       "first_seen_at": "2026-07-10T14:36:09Z",
       "history_count": 2,
       "target_price": null,
@@ -187,7 +187,7 @@
       "basket_original_price": 52.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "retailer returned a challenge or incomplete page"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-cyberbrick-timelapse",
@@ -207,7 +207,7 @@
       "lowest_price": 20.99,
       "highest_price": 20.99,
       "in_stock": true,
-      "checked_at": "2026-07-10T14:54:23Z",
+      "checked_at": "2026-07-10T14:59:02Z",
       "first_seen_at": "2026-07-10T14:36:09Z",
       "history_count": 2,
       "target_price": null,
@@ -216,7 +216,7 @@
       "basket_original_price": 20.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "404 Client Error: Not Found for url: https://us.store.bambulab.com/products/cyberbrick-time-lapse-kit"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-mag-alloy-scraper",
@@ -236,7 +236,7 @@
       "lowest_price": 16.99,
       "highest_price": 16.99,
       "in_stock": true,
-      "checked_at": "2026-07-10T14:54:23Z",
+      "checked_at": "2026-07-10T14:59:02Z",
       "first_seen_at": "2026-07-10T14:36:09Z",
       "history_count": 2,
       "target_price": null,
@@ -245,7 +245,7 @@
       "basket_original_price": 16.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "retailer returned a challenge or incomplete page"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-tpu-feed-assist",
@@ -265,7 +265,7 @@
       "lowest_price": 45.99,
       "highest_price": 45.99,
       "in_stock": false,
-      "checked_at": "2026-07-10T14:54:23Z",
+      "checked_at": "2026-07-10T14:59:02Z",
       "first_seen_at": "2026-07-10T14:36:09Z",
       "history_count": 2,
       "target_price": null,
@@ -274,7 +274,7 @@
       "basket_original_price": 45.99,
       "basket_status": "out-of-stock",
       "price_source": "Last known price",
-      "check_error": "retailer returned a challenge or incomplete page"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "corsair-ram",
@@ -294,7 +294,7 @@
       "lowest_price": 479.99,
       "highest_price": 479.99,
       "in_stock": true,
-      "checked_at": "2026-07-10T14:54:23Z",
+      "checked_at": "2026-07-10T14:59:02Z",
       "first_seen_at": "2026-07-06T00:37:50Z",
       "history_count": 23,
       "target_price": null,
@@ -302,8 +302,8 @@
       "basket_price": null,
       "basket_original_price": null,
       "basket_status": "none",
-      "price_source": "Last known price",
-      "check_error": "403 Client Error: Forbidden for url: https://www.overclockers.co.uk/corsair-vengeance-rgb-expo-32gb-2x16gb-ddr5-pc5-48000c30-6000mhz-dual-cha-my-4du-cs.html"
+      "price_source": "Live product page via rendered fallback",
+      "check_error": null
     }
   ],
   "source": "Automated GitHub Actions multi-product check"
