@@ -321,6 +321,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "heartbeat"
+    },
+    {
+      "timestamp": "2026-07-11T22:08:33Z",
+      "price": 479.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-x2d-combo": [
@@ -494,6 +501,13 @@
     },
     {
       "timestamp": "2026-07-11T21:12:10Z",
+      "price": 769.0,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
+    },
+    {
+      "timestamp": "2026-07-11T22:08:33Z",
       "price": 769.0,
       "currency": "GBP",
       "in_stock": true,
@@ -675,6 +689,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "heartbeat"
+    },
+    {
+      "timestamp": "2026-07-11T22:08:33Z",
+      "price": 15.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-tungsten-hotend-04": [
@@ -848,6 +869,13 @@
     },
     {
       "timestamp": "2026-07-11T21:12:10Z",
+      "price": 82.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
+    },
+    {
+      "timestamp": "2026-07-11T22:08:33Z",
       "price": 82.99,
       "currency": "GBP",
       "in_stock": true,
@@ -1029,6 +1057,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "heartbeat"
+    },
+    {
+      "timestamp": "2026-07-11T22:08:33Z",
+      "price": 20.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-vision-encoder": [
@@ -1202,6 +1237,13 @@
     },
     {
       "timestamp": "2026-07-11T21:12:10Z",
+      "price": 63.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
+    },
+    {
+      "timestamp": "2026-07-11T22:08:33Z",
       "price": 63.99,
       "currency": "GBP",
       "in_stock": true,
@@ -1383,6 +1425,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "heartbeat"
+    },
+    {
+      "timestamp": "2026-07-11T22:08:33Z",
+      "price": 52.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-cyberbrick-timelapse": [
@@ -1556,6 +1605,13 @@
     },
     {
       "timestamp": "2026-07-11T21:12:10Z",
+      "price": 20.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
+    },
+    {
+      "timestamp": "2026-07-11T22:08:33Z",
       "price": 20.99,
       "currency": "GBP",
       "in_stock": true,
@@ -1737,6 +1793,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "heartbeat"
+    },
+    {
+      "timestamp": "2026-07-11T22:08:33Z",
+      "price": 16.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-tpu-feed-assist": [
@@ -1910,6 +1973,13 @@
     },
     {
       "timestamp": "2026-07-11T21:12:10Z",
+      "price": 45.99,
+      "currency": "GBP",
+      "in_stock": false,
+      "reason": "heartbeat"
+    },
+    {
+      "timestamp": "2026-07-11T22:08:33Z",
       "price": 45.99,
       "currency": "GBP",
       "in_stock": false,
