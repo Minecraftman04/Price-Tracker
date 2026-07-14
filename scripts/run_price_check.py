@@ -266,6 +266,50 @@ def fetch_with_shopify(url: str, timeout: int, search_url: str = "") -> tuple[st
         except Exception as exc:  # noqa: BLE001
             print(f"Bambu Shopify JSON fallback failed for {wanted['product_name']}: {exc}", file=sys.stderr)
 
+        # Bambu can block both Shopify JSON endpoints while its rendered product
+        # page remains readable through the existing fallback. Preserve live
+        # stock information from that page even when its price is client-rendered.
+        fallback_html, fallback_source = ORIGINAL_FETCH(url, timeout, search_url)
+        live_stock = check_price.extract_stock(
+            fallback_html,
+            variant=str(wanted.get("variant", "")),
+            product_name=str(wanted.get("product_name", "")),
+        )
+        if live_stock is not None:
+            try:
+                live_price = check_price.extract_price(
+                    fallback_html,
+                    reference_price=price_decimal(wanted.get("initial_price")),
+                    variant=str(wanted.get("variant", "")),
+                    product_name=str(wanted.get("product_name", "")),
+                )
+            except Exception:  # noqa: BLE001
+                live_price = price_decimal(wanted.get("initial_price"))
+
+            if live_price is not None:
+                fallback_product = {
+                    "title": wanted.get("product_name"),
+                    "handle": clean_url.rsplit("/", 1)[-1],
+                    "available": live_stock,
+                    "variants": [],
+                }
+                fallback_variant = {
+                    "title": wanted.get("variant") or "Default",
+                    "sku": wanted.get("sku"),
+                    "price": f"{live_price:.2f}",
+                    "available": live_stock,
+                }
+                print(
+                    f"Resolved Bambu live stock from rendered page: {wanted['product_name']} "
+                    f"| £{live_price:.2f} | available={live_stock}"
+                )
+                return (
+                    synthetic_product_html(fallback_product, fallback_variant, wanted),
+                    f"{fallback_source} stock + configured reference price",
+                )
+
+        return fallback_html, fallback_source
+
     return ORIGINAL_FETCH(url, timeout, search_url)
 
 
