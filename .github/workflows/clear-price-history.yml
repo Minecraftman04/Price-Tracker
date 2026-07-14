@@ -9,7 +9,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: clear-price-history
+  group: basket-price-tracker-pages
   cancel-in-progress: false
 
 jobs:
