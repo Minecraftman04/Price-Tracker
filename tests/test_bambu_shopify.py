@@ -60,6 +60,32 @@ class BambuShopifyTests(unittest.TestCase):
         self.assertEqual(product["variants"][0]["price"], "45.99")
         self.assertFalse(product["variants"][0]["available"])
 
+    def test_predictive_search_price_scale_matches_known_price(self):
+        candidate = {
+            "title": "TPU Feed Assist Module",
+            "available": True,
+            "variants": [
+                {
+                    "title": "H2 Series/X1 Series/P1 Series/P2S/X2D",
+                    "sku": "SLA",
+                    "price": 4599,
+                    "available": True,
+                }
+            ],
+        }
+        wanted = {
+            "product_name": "TPU Feed Assist Module",
+            "variant": "H2 Series/X1 Series/P1 Series/P2S/X2D",
+            "sku": "SLA",
+            "initial_price": 45.99,
+        }
+
+        product = run_price_check.normalise_best_price_scale(candidate, wanted)
+
+        self.assertIsNotNone(product)
+        self.assertEqual(product["variants"][0]["price"], "45.99")
+        self.assertTrue(product["variants"][0]["available"])
+
     def test_rendered_fallback_preserves_live_stock_when_price_is_client_rendered(self):
         url = "https://uk.store.bambulab.com/products/tpu-feed-assist-module"
         rendered = """
