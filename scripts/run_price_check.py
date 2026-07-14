@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 import re
 import sys
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any
@@ -30,28 +30,82 @@ def price_decimal(value: Any) -> Decimal | None:
     return check_price.decimal_price(value)
 
 
+def cents_to_decimal(value: Any) -> Decimal | None:
+    """Convert Shopify's Storefront ``.js`` integer prices from pence to pounds."""
+    if value is None:
+        return None
+    try:
+        amount = Decimal(str(value))
+    except InvalidOperation:
+        return None
+    return (amount / Decimal("100")).quantize(Decimal("0.01"))
+
+
 def request_json(url: str, timeout: int) -> dict[str, Any] | None:
     response = requests.get(
         url,
         headers={
-            "User-Agent": "Price-Tracker/2.2 (+https://github.com/Minecraftman04/Price-Tracker)",
-            "Accept": "application/json",
+            "User-Agent": "Price-Tracker/2.3 (+https://github.com/Minecraftman04/Price-Tracker)",
+            "Accept": "application/json,text/javascript,*/*;q=0.8",
             "Accept-Language": "en-GB,en;q=0.9",
             "Cache-Control": "no-cache",
         },
         timeout=min(max(timeout, 15), 30),
-        allow_redirects=False,
+        allow_redirects=True,
     )
     if response.status_code != 200:
         return None
     content_type = response.headers.get("content-type", "").lower()
-    if "json" not in content_type and not response.text.lstrip().startswith(("{", "[")):
+    if (
+        "json" not in content_type
+        and "javascript" not in content_type
+        and not response.text.lstrip().startswith(("{", "["))
+    ):
         return None
     try:
         payload = response.json()
     except ValueError:
         return None
     return payload if isinstance(payload, dict) else None
+
+
+def normalise_product_payload(
+    payload: dict[str, Any] | None,
+    *,
+    prices_in_cents: bool = False,
+) -> dict[str, Any] | None:
+    """Return one Shopify product in the shape used by the checker.
+
+    Shopify's public ``/products/<handle>.js`` endpoint returns the product at
+    the top level and expresses prices in pence. The older ``.json`` endpoint
+    wraps it in ``{"product": ...}`` and normally expresses prices in pounds.
+    """
+    if not isinstance(payload, dict):
+        return None
+
+    candidate = payload.get("product")
+    product = candidate if isinstance(candidate, dict) else payload
+    variants = product.get("variants")
+    if not isinstance(variants, list) or not variants:
+        return None
+
+    normalised = dict(product)
+    normalised_variants: list[dict[str, Any]] = []
+    for item in variants:
+        if not isinstance(item, dict):
+            continue
+        variant = dict(item)
+        if prices_in_cents:
+            for key in ("price", "compare_at_price"):
+                converted = cents_to_decimal(variant.get(key))
+                if converted is not None:
+                    variant[key] = f"{converted:.2f}"
+        normalised_variants.append(variant)
+
+    if not normalised_variants:
+        return None
+    normalised["variants"] = normalised_variants
+    return normalised
 
 
 def load_catalog(timeout: int) -> list[dict[str, Any]]:
@@ -92,10 +146,15 @@ def product_score(candidate: dict[str, Any], wanted: dict[str, Any]) -> float:
 
 
 def resolve_product(url: str, wanted: dict[str, Any], timeout: int) -> dict[str, Any] | None:
-    payload = request_json(f"{url.rstrip('/')}.json", timeout)
-    product = payload.get("product") if payload else None
-    if isinstance(product, dict):
-        return product
+    clean_url = url.rstrip("/")
+
+    # Shopify documents the .js endpoint for storefront product data. It is
+    # generally available even when the rendered Bambu page is bot-protected.
+    for suffix, prices_in_cents in ((".js", True), (".json", False)):
+        payload = request_json(f"{clean_url}{suffix}", timeout)
+        product = normalise_product_payload(payload, prices_in_cents=prices_in_cents)
+        if product:
+            return product
 
     catalog = load_catalog(timeout)
     if not catalog:
@@ -103,7 +162,7 @@ def resolve_product(url: str, wanted: dict[str, Any], timeout: int) -> dict[str,
     ranked = sorted(catalog, key=lambda item: product_score(item, wanted), reverse=True)
     if not ranked or product_score(ranked[0], wanted) < 100:
         return None
-    return ranked[0]
+    return normalise_product_payload(ranked[0]) or ranked[0]
 
 
 def variant_score(variant: dict[str, Any], wanted: dict[str, Any]) -> float:
@@ -146,7 +205,7 @@ def synthetic_product_html(product: dict[str, Any], variant: dict[str, Any], wan
     price = price_decimal(variant.get("price"))
     if price is None:
         raise ValueError("Shopify variant has no valid price")
-    available = bool(variant.get("available", True))
+    available = bool(variant.get("available", product.get("available", True)))
     availability = "https://schema.org/InStock" if available else "https://schema.org/OutOfStock"
     variant_text = " / ".join(
         str(value)
@@ -200,9 +259,10 @@ def fetch_with_shopify(url: str, timeout: int, search_url: str = "") -> tuple[st
                     )
                     print(
                         f"Resolved Bambu product: {wanted['product_name']} -> "
-                        f"{resolved_url} | {variant.get('title')} | £{variant.get('price')}"
+                        f"{resolved_url} | {variant.get('title')} | £{variant.get('price')} "
+                        f"| available={variant.get('available')}"
                     )
-                    return synthetic_product_html(product, variant, wanted), "Bambu Shopify product JSON"
+                    return synthetic_product_html(product, variant, wanted), "Bambu Shopify storefront JSON"
         except Exception as exc:  # noqa: BLE001
             print(f"Bambu Shopify JSON fallback failed for {wanted['product_name']}: {exc}", file=sys.stderr)
 
