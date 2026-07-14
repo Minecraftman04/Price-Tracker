@@ -7,6 +7,8 @@ on:
 permissions:
   contents: write
   issues: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: basket-price-tracker-pages
@@ -15,6 +17,9 @@ concurrency:
 jobs:
   clear-history:
     if: startsWith(github.event.issue.title, '[Clear price history]')
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Validate repository owner
@@ -60,6 +65,37 @@ jobs:
           git pull --rebase origin main
           git push origin main
 
+      - name: Configure GitHub Pages
+        if: steps.auth.outputs.authorized == 'true' && steps.clear.outputs.changed == 'true'
+        uses: actions/configure-pages@v6
+
+      - name: Upload updated dashboard
+        if: steps.auth.outputs.authorized == 'true' && steps.clear.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: "."
+
+      - name: Deploy updated dashboard
+        if: steps.auth.outputs.authorized == 'true' && steps.clear.outputs.changed == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v5
+
+      - name: Verify published history reset
+        if: steps.auth.outputs.authorized == 'true' && steps.clear.outputs.changed == 'true'
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          for attempt in $(seq 1 12); do
+            cache_bust="history-reset=${GITHUB_RUN_ID}-${attempt}"
+            if curl --fail --silent --show-error --location --max-time 20 "${PAGE_URL%/}/data/price-history.json?${cache_bust}" -o /tmp/published-history.json; then
+              echo "Published reset history verified at ${PAGE_URL}"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "The reset was committed, but the published history could not be verified." >&2
+          exit 1
+
       - name: Close request
         if: always()
         uses: actions/github-script@v9
@@ -75,7 +111,7 @@ jobs:
             if (!authorized) {
               body = 'This reset request was not processed. Only the repository owner can clear tracker history.';
             } else if (changed) {
-              body = `${process.env.SUMMARY}\n\nThe normal tracker workflow will now redeploy the updated dashboard.`;
+              body = `${process.env.SUMMARY}\n\nThe updated dashboard has been deployed to GitHub Pages.`;
             } else {
               body = process.env.SUMMARY || 'No stored history needed to be changed.';
             }
