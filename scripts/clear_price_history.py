@@ -131,6 +131,8 @@ def main() -> int:
 
     set_output("changed", str(changed).lower())
     set_output("summary", summary.replace("\n", " "))
+    set_output("scope", request["scope"])
+    set_output("product_id", request.get("product_id", ""))
     print(summary)
     return 0
 
