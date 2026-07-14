@@ -11,6 +11,14 @@
   transition: .16s ease;
 }
 
+.history-catalogue-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
 .history-clear-all {
   flex: 0 0 auto;
   padding: 8px 12px;
@@ -144,6 +152,12 @@
 }
 
 @media (max-width: 680px) {
+  .history-catalogue-controls {
+    width: 100%;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
   .history-clear-all {
     width: 100%;
     text-align: center;
