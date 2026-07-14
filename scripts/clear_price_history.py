@@ -90,6 +90,7 @@ def clear_price_history(
     products = [item for item in latest.get("products", []) if isinstance(item, dict) and item.get("id")]
     if request["scope"] == "all":
         targets = products
+        histories.clear()
         label = "all tracked products"
     else:
         product_id = request["product_id"]
