@@ -58,6 +58,7 @@ jobs:
         id: check
         run: |
           python scripts/run_price_check.py
+          python scripts/apply_browser_price_fallbacks.py
           python scripts/apply_stock_fallbacks.py
 
       - name: Commit updated price data
