@@ -1,6 +1,7 @@
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "scripts"
@@ -58,6 +59,26 @@ class BambuShopifyTests(unittest.TestCase):
 
         self.assertEqual(product["variants"][0]["price"], "45.99")
         self.assertFalse(product["variants"][0]["available"])
+
+    def test_rendered_fallback_preserves_live_stock_when_price_is_client_rendered(self):
+        url = "https://uk.store.bambulab.com/products/tpu-feed-assist-module"
+        rendered = """
+        <html><body>
+          <h1>TPU Feed Assist Module</h1>
+          <p>H2 Series/X1 Series/P1 Series/P2S/X2D</p>
+          <button>Add to cart</button>
+        </body></html>
+        """
+
+        with (
+            patch.object(run_price_check, "resolve_product", return_value=None),
+            patch.object(run_price_check, "ORIGINAL_FETCH", return_value=(rendered, "Rendered product page")),
+        ):
+            html, source = run_price_check.fetch_with_shopify(url, 35)
+
+        self.assertIn("configured reference price", source)
+        self.assertEqual(run_price_check.check_price.extract_price(html), run_price_check.Decimal("45.99"))
+        self.assertTrue(run_price_check.check_price.extract_stock(html))
 
 
 if __name__ == "__main__":
