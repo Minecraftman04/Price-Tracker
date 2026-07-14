@@ -10,6 +10,7 @@ from decimal import Decimal, InvalidOperation
 from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote_plus
 
 import requests
 
@@ -145,6 +146,64 @@ def product_score(candidate: dict[str, Any], wanted: dict[str, Any]) -> float:
     return score
 
 
+def product_with_variants(candidate: dict[str, Any]) -> dict[str, Any]:
+    """Ensure predictive-search results have a variants list."""
+    if isinstance(candidate.get("variants"), list) and candidate["variants"]:
+        return candidate
+    product = dict(candidate)
+    if candidate.get("price") is not None:
+        product["variants"] = [
+            {
+                "title": candidate.get("title") or "Default",
+                "sku": candidate.get("sku"),
+                "price": candidate.get("price"),
+                "available": candidate.get("available"),
+            }
+        ]
+    return product
+
+
+def normalise_best_price_scale(
+    candidate: dict[str, Any],
+    wanted: dict[str, Any],
+) -> dict[str, Any] | None:
+    """Choose pounds or pence based on whichever best matches the known price."""
+    candidate = product_with_variants(candidate)
+    reference = price_decimal(wanted.get("initial_price"))
+    choices: list[tuple[Decimal, dict[str, Any]]] = []
+    for prices_in_cents in (False, True):
+        product = normalise_product_payload(candidate, prices_in_cents=prices_in_cents)
+        if not product:
+            continue
+        variant = choose_variant(product, wanted)
+        price = price_decimal(variant.get("price")) if variant else None
+        if price is None:
+            continue
+        distance = abs(price - reference) if reference is not None else Decimal("0")
+        choices.append((distance, product))
+    return min(choices, key=lambda item: item[0])[1] if choices else None
+
+
+def load_predictive_search(wanted: dict[str, Any], timeout: int) -> dict[str, Any] | None:
+    query = quote_plus(str(wanted.get("product_name", "")))
+    payload = request_json(
+        "https://uk.store.bambulab.com/search/suggest.json"
+        f"?q={query}&resources[type]=product&resources[limit]=10"
+        "&resources[options][unavailable_products]=show",
+        timeout,
+    )
+    resources = payload.get("resources", {}) if payload else {}
+    results = resources.get("results", {}) if isinstance(resources, dict) else {}
+    products = results.get("products", []) if isinstance(results, dict) else []
+    candidates = [item for item in products if isinstance(item, dict)]
+    if not candidates:
+        return None
+    ranked = sorted(candidates, key=lambda item: product_score(item, wanted), reverse=True)
+    if product_score(ranked[0], wanted) < 100:
+        return None
+    return normalise_best_price_scale(ranked[0], wanted)
+
+
 def resolve_product(url: str, wanted: dict[str, Any], timeout: int) -> dict[str, Any] | None:
     clean_url = url.rstrip("/")
 
@@ -156,13 +215,17 @@ def resolve_product(url: str, wanted: dict[str, Any], timeout: int) -> dict[str,
         if product:
             return product
 
+    predictive_product = load_predictive_search(wanted, timeout)
+    if predictive_product:
+        return predictive_product
+
     catalog = load_catalog(timeout)
     if not catalog:
         return None
     ranked = sorted(catalog, key=lambda item: product_score(item, wanted), reverse=True)
     if not ranked or product_score(ranked[0], wanted) < 100:
         return None
-    return normalise_product_payload(ranked[0]) or ranked[0]
+    return normalise_best_price_scale(ranked[0], wanted) or ranked[0]
 
 
 def variant_score(variant: dict[str, Any], wanted: dict[str, Any]) -> float:
@@ -275,6 +338,19 @@ def fetch_with_shopify(url: str, timeout: int, search_url: str = "") -> tuple[st
             variant=str(wanted.get("variant", "")),
             product_name=str(wanted.get("product_name", "")),
         )
+        if live_stock is None and search_url:
+            try:
+                search_html, search_source = ORIGINAL_FETCH(search_url, timeout, "")
+                search_stock = check_price.extract_stock(
+                    search_html,
+                    variant=str(wanted.get("variant", "")),
+                    product_name=str(wanted.get("product_name", "")),
+                )
+                if search_stock is not None:
+                    fallback_html, fallback_source, live_stock = search_html, search_source, search_stock
+            except Exception as exc:  # noqa: BLE001
+                print(f"Bambu rendered search fallback failed for {wanted['product_name']}: {exc}", file=sys.stderr)
+
         if live_stock is not None:
             try:
                 live_price = check_price.extract_price(
