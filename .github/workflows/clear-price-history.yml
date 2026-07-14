@@ -1,0 +1,93 @@
+name: Clear price history
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: clear-price-history
+  cancel-in-progress: false
+
+jobs:
+  clear-history:
+    if: startsWith(github.event.issue.title, '[Clear price history]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate repository owner
+        id: auth
+        env:
+          REQUESTOR: ${{ github.event.issue.user.login }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          if [ "$REQUESTOR" = "$REPOSITORY_OWNER" ]; then
+            echo "authorized=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "authorized=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check out repository
+        if: steps.auth.outputs.authorized == 'true'
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        if: steps.auth.outputs.authorized == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Read reset request
+        if: steps.auth.outputs.authorized == 'true'
+        run: jq -r '.issue.body // ""' "$GITHUB_EVENT_PATH" > /tmp/clear-price-history-request.txt
+
+      - name: Clear requested history
+        if: steps.auth.outputs.authorized == 'true'
+        id: clear
+        run: python scripts/clear_price_history.py --request-file /tmp/clear-price-history-request.txt
+
+      - name: Commit reset history
+        if: steps.auth.outputs.authorized == 'true' && steps.clear.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/latest.json data/price-history.json
+          git commit -m "chore: clear price history"
+          git pull --rebase origin main
+          git push origin main
+
+      - name: Close request
+        if: always()
+        uses: actions/github-script@v9
+        env:
+          AUTHORIZED: ${{ steps.auth.outputs.authorized }}
+          CHANGED: ${{ steps.clear.outputs.changed }}
+          SUMMARY: ${{ steps.clear.outputs.summary }}
+        with:
+          script: |
+            const authorized = process.env.AUTHORIZED === 'true';
+            const changed = process.env.CHANGED === 'true';
+            let body;
+            if (!authorized) {
+              body = 'This reset request was not processed. Only the repository owner can clear tracker history.';
+            } else if (changed) {
+              body = `${process.env.SUMMARY}\n\nThe normal tracker workflow will now redeploy the updated dashboard.`;
+            } else {
+              body = process.env.SUMMARY || 'No stored history needed to be changed.';
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed'
+            });
