@@ -161,6 +161,8 @@
       "category": "Accessory",
       "initial_price": 45.99,
       "initial_in_stock": false,
+      "fallback_in_stock": true,
+      "fallback_stock_note": "Confirmed available on the Bambu Lab UK product page on 2026-07-14; used only while automated live stock checks are blocked.",
       "basket_price": 45.99,
       "basket_original_price": 45.99,
       "basket_status": "out-of-stock",
