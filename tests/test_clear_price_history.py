@@ -1,3 +1,5 @@
+import shutil
+import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -56,6 +58,7 @@ class ClearPriceHistoryTests(unittest.TestCase):
                 {"timestamp": "a", "price": 18.00},
                 {"timestamp": "b", "price": 20.00},
             ],
+            "removed-product": [{"timestamp": "old", "price": 99.00}],
         }
 
     def test_parse_product_request(self):
@@ -78,6 +81,7 @@ class ClearPriceHistoryTests(unittest.TestCase):
         self.assertEqual(self.histories["one"][0]["reason"], "manual-reset")
         self.assertEqual(self.histories["one"][0]["price"], 12.34)
         self.assertEqual(len(self.histories["two"]), 2)
+        self.assertIn("removed-product", self.histories)
         product = self.latest["products"][0]
         self.assertEqual(product["previous_price"], 12.34)
         self.assertEqual(product["change"], 0.0)
@@ -85,7 +89,7 @@ class ClearPriceHistoryTests(unittest.TestCase):
         self.assertEqual(product["highest_price"], 12.34)
         self.assertEqual(product["history_count"], 1)
 
-    def test_clear_all_products(self):
+    def test_clear_all_products_removes_stale_history(self):
         changed, summary = clear_price_history(
             self.latest,
             self.histories,
@@ -94,6 +98,7 @@ class ClearPriceHistoryTests(unittest.TestCase):
 
         self.assertTrue(changed)
         self.assertIn("all tracked products", summary)
+        self.assertEqual(set(self.histories), {"one", "two"})
         self.assertEqual(len(self.histories["one"]), 1)
         self.assertEqual(len(self.histories["two"]), 1)
         self.assertEqual(self.latest["products"][1]["lowest_price"], 20.00)
@@ -106,6 +111,22 @@ class ClearPriceHistoryTests(unittest.TestCase):
                 self.histories,
                 {"action": "clear-price-history", "scope": "product", "product_id": "missing"},
             )
+
+    def test_dashboard_loads_history_control_assets(self):
+        index = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn("history-controls.css", index)
+        self.assertIn("history-controls.js", index)
+
+    def test_history_controls_javascript_has_valid_syntax(self):
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("Node.js is not installed")
+        subprocess.run(
+            [node, "--check", str(ROOT / "history-controls.js")],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
 
 
 if __name__ == "__main__":
