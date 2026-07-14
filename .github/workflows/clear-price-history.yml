@@ -84,10 +84,27 @@ jobs:
         if: steps.auth.outputs.authorized == 'true' && steps.clear.outputs.changed == 'true'
         env:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          RESET_SCOPE: ${{ steps.clear.outputs.scope }}
+          RESET_PRODUCT_ID: ${{ steps.clear.outputs.product_id }}
         run: |
           for attempt in $(seq 1 12); do
             cache_bust="history-reset=${GITHUB_RUN_ID}-${attempt}"
-            if curl --fail --silent --show-error --location --max-time 20 "${PAGE_URL%/}/data/price-history.json?${cache_bust}" -o /tmp/published-history.json; then
+            if curl --fail --silent --show-error --location --max-time 20 "${PAGE_URL%/}/data/price-history.json?${cache_bust}" -o /tmp/published-history.json \
+              && python - "$RESET_SCOPE" "$RESET_PRODUCT_ID" /tmp/published-history.json <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          scope, product_id, path = sys.argv[1:]
+          history = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+          if scope == "all":
+              valid = all(isinstance(entries, list) and len(entries) <= 1 for entries in history.values())
+          else:
+              entries = history.get(product_id)
+              valid = isinstance(entries, list) and len(entries) <= 1
+          raise SystemExit(0 if valid else 1)
+          PY
+            then
               echo "Published reset history verified at ${PAGE_URL}"
               exit 0
             fi
@@ -103,13 +120,17 @@ jobs:
           AUTHORIZED: ${{ steps.auth.outputs.authorized }}
           CHANGED: ${{ steps.clear.outputs.changed }}
           SUMMARY: ${{ steps.clear.outputs.summary }}
+          JOB_STATUS: ${{ job.status }}
         with:
           script: |
             const authorized = process.env.AUTHORIZED === 'true';
             const changed = process.env.CHANGED === 'true';
+            const succeeded = process.env.JOB_STATUS === 'success';
             let body;
             if (!authorized) {
               body = 'This reset request was not processed. Only the repository owner can clear tracker history.';
+            } else if (!succeeded) {
+              body = 'The history reset could not be completed. Check the Clear price history workflow run for details.';
             } else if (changed) {
               body = `${process.env.SUMMARY}\n\nThe updated dashboard has been deployed to GitHub Pages.`;
             } else {
