@@ -6,6 +6,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "manual-reset"
+    },
+    {
+      "timestamp": "2026-07-14T12:22:19Z",
+      "price": 769.0,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-hotend-02": [
@@ -15,6 +22,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "manual-reset"
+    },
+    {
+      "timestamp": "2026-07-14T12:22:19Z",
+      "price": 15.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-tungsten-hotend-04": [
@@ -24,6 +38,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "manual-reset"
+    },
+    {
+      "timestamp": "2026-07-14T12:22:19Z",
+      "price": 82.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-pla-basic-black": [
@@ -33,6 +54,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "manual-reset"
+    },
+    {
+      "timestamp": "2026-07-14T12:22:19Z",
+      "price": 20.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-vision-encoder": [
@@ -42,6 +70,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "manual-reset"
+    },
+    {
+      "timestamp": "2026-07-14T12:22:19Z",
+      "price": 63.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-filament-track-switch": [
@@ -51,6 +86,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "manual-reset"
+    },
+    {
+      "timestamp": "2026-07-14T12:22:19Z",
+      "price": 52.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-cyberbrick-timelapse": [
@@ -60,6 +102,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "manual-reset"
+    },
+    {
+      "timestamp": "2026-07-14T12:22:19Z",
+      "price": 20.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-mag-alloy-scraper": [
@@ -69,6 +118,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "manual-reset"
+    },
+    {
+      "timestamp": "2026-07-14T12:22:19Z",
+      "price": 16.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "bambu-tpu-feed-assist": [
@@ -78,6 +134,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "manual-reset"
+    },
+    {
+      "timestamp": "2026-07-14T12:22:19Z",
+      "price": 39.09,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ],
   "corsair-ram": [
@@ -87,6 +150,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "manual-reset"
+    },
+    {
+      "timestamp": "2026-07-14T12:22:19Z",
+      "price": 479.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "heartbeat"
     }
   ]
 }
