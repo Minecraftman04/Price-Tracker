@@ -1,0 +1,163 @@
+.history-clear-all,
+.history-card-clear,
+.history-dialog button {
+  appearance: none;
+  border: 1px solid rgba(255, 135, 152, .28);
+  color: #ffb2be;
+  background: rgba(255, 135, 152, .07);
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+  transition: .16s ease;
+}
+
+.history-clear-all {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: .72rem;
+  white-space: nowrap;
+}
+
+.history-clear-all:hover,
+.history-card-clear:hover {
+  color: #fff;
+  border-color: rgba(255, 135, 152, .6);
+  background: rgba(255, 135, 152, .15);
+}
+
+.history-card-shell {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-card-shell .product-card {
+  flex: 1 1 auto;
+  border-radius: 20px 20px 0 0;
+  border-bottom-color: rgba(255, 255, 255, .045);
+}
+
+.history-card-shell .product-card:hover {
+  transform: none;
+}
+
+.history-card-shell:has(.product-card.selected) .history-card-clear {
+  border-color: rgba(118, 232, 170, .35);
+}
+
+.history-card-clear {
+  width: 100%;
+  min-height: 39px;
+  padding: 9px 13px;
+  border-top: 0;
+  border-radius: 0 0 20px 20px;
+  font-size: .66rem;
+  letter-spacing: .01em;
+}
+
+.history-card-clear span {
+  margin-right: 6px;
+  font-size: .82rem;
+}
+
+.history-dialog {
+  width: min(520px, calc(100% - 28px));
+  padding: 0;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 22px;
+  background: #0a1712;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, .6);
+}
+
+.history-dialog::backdrop {
+  background: rgba(0, 0, 0, .72);
+  backdrop-filter: blur(5px);
+}
+
+.history-dialog form {
+  padding: 25px;
+}
+
+.history-dialog .eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--red);
+}
+
+.history-dialog h2 {
+  margin: 0 0 12px;
+  font-size: 1.45rem;
+}
+
+.history-dialog p {
+  margin: 0;
+  color: var(--muted);
+  font-size: .79rem;
+  line-height: 1.65;
+}
+
+.history-dialog .history-dialog-target {
+  margin-top: 15px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, .07);
+  border-radius: 12px;
+  color: var(--text);
+  background: rgba(255, 255, 255, .035);
+  font-weight: 700;
+}
+
+.history-dialog .history-dialog-note {
+  margin-top: 12px;
+  color: var(--subtle);
+  font-size: .69rem;
+}
+
+.history-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 22px;
+}
+
+.history-dialog button {
+  padding: 10px 14px;
+  border-radius: 11px;
+  font-size: .75rem;
+}
+
+.history-dialog .history-dialog-cancel {
+  color: var(--muted);
+  border-color: var(--border);
+  background: rgba(255, 255, 255, .035);
+}
+
+.history-dialog .history-dialog-confirm {
+  color: #fff;
+  border-color: rgba(255, 135, 152, .48);
+  background: rgba(255, 135, 152, .16);
+}
+
+.history-dialog .history-dialog-confirm:hover {
+  background: rgba(255, 135, 152, .25);
+}
+
+@media (max-width: 680px) {
+  .history-clear-all {
+    width: 100%;
+    text-align: center;
+  }
+
+  .history-dialog form {
+    padding: 21px 18px;
+  }
+
+  .history-dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .history-dialog button {
+    width: 100%;
+  }
+}
