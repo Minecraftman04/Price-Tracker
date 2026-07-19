@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-19T18:07:16Z",
+  "generated_at": "2026-07-19T19:22:11Z",
   "currency": "GBP",
   "currency_symbol": "£",
   "basket": {
@@ -13,7 +13,7 @@
     "saved_out_of_stock_value": 45.99
   },
   "product_count": 10,
-  "failed_checks": 10,
+  "failed_checks": 9,
   "products": [
     {
       "id": "bambu-x2d-combo",
@@ -33,16 +33,16 @@
       "lowest_price": 769.0,
       "highest_price": 769.0,
       "in_stock": true,
-      "checked_at": "2026-07-19T18:07:16Z",
+      "checked_at": "2026-07-19T19:22:11Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
-      "history_count": 88,
+      "history_count": 89,
       "target_price": null,
       "notify_on_any_drop": true,
       "basket_price": 769.0,
       "basket_original_price": 769.0,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "rendered https://uk.store.bambulab.com/products/x2d attempt 2: 401 Client Error: Unauthorized for url: https://r.jina.ai/https://uk.store.bambulab.com/products/x2d; direct https://uk.store.bambulab.com/search?q=Bambu+Lab+X2D: retailer returned a challenge or incomplete product pa"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-hotend-02",
@@ -62,16 +62,16 @@
       "lowest_price": 15.99,
       "highest_price": 15.99,
       "in_stock": true,
-      "checked_at": "2026-07-19T18:07:16Z",
+      "checked_at": "2026-07-19T19:22:11Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
-      "history_count": 88,
+      "history_count": 89,
       "target_price": null,
       "notify_on_any_drop": true,
       "basket_price": 15.19,
       "basket_original_price": 15.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "rendered https://uk.store.bambulab.com/products/bambu-hotend-h2-p2s-x2d attempt 2: 401 Client Error: Unauthorized for url: https://r.jina.ai/https://uk.store.bambulab.com/products/bambu-hotend-h2-p2s-x2d; direct https://uk.store.bambulab.com/search?q=Bambu+Hotend+-+H2%2FP2S%2FX2D"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-tungsten-hotend-04",
@@ -91,16 +91,16 @@
       "lowest_price": 82.99,
       "highest_price": 82.99,
       "in_stock": true,
-      "checked_at": "2026-07-19T18:07:16Z",
+      "checked_at": "2026-07-19T19:22:11Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
-      "history_count": 88,
+      "history_count": 89,
       "target_price": null,
       "notify_on_any_drop": true,
       "basket_price": 78.84,
       "basket_original_price": 82.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "rendered https://uk.store.bambulab.com/products/tungsten-carbide-hotend-h2-p2s-x2d attempt 2: 401 Client Error: Unauthorized for url: https://r.jina.ai/https://uk.store.bambulab.com/products/tungsten-carbide-hotend-h2-p2s-x2d; direct https://uk.store.bambulab.com/search?q=Tungste"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-pla-basic-black",
@@ -120,16 +120,16 @@
       "lowest_price": 20.99,
       "highest_price": 20.99,
       "in_stock": true,
-      "checked_at": "2026-07-19T18:07:16Z",
+      "checked_at": "2026-07-19T19:22:11Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
-      "history_count": 88,
+      "history_count": 89,
       "target_price": null,
       "notify_on_any_drop": true,
       "basket_price": 10.5,
       "basket_original_price": 20.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "rendered https://uk.store.bambulab.com/products/pla-basic-filament attempt 2: 401 Client Error: Unauthorized for url: https://r.jina.ai/https://uk.store.bambulab.com/products/pla-basic-filament; direct https://uk.store.bambulab.com/search?q=PLA+Basic: retailer returned a challeng"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-vision-encoder",
@@ -149,16 +149,16 @@
       "lowest_price": 63.99,
       "highest_price": 63.99,
       "in_stock": true,
-      "checked_at": "2026-07-19T18:07:16Z",
+      "checked_at": "2026-07-19T19:22:11Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
-      "history_count": 88,
+      "history_count": 89,
       "target_price": null,
       "notify_on_any_drop": true,
       "basket_price": 57.59,
       "basket_original_price": 63.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "rendered https://uk.store.bambulab.com/products/vision-encoder attempt 2: 401 Client Error: Unauthorized for url: https://r.jina.ai/https://uk.store.bambulab.com/products/vision-encoder; direct https://uk.store.bambulab.com/search?q=Vision+Encoder: retailer returned a challenge o"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-filament-track-switch",
@@ -178,16 +178,16 @@
       "lowest_price": 52.99,
       "highest_price": 52.99,
       "in_stock": true,
-      "checked_at": "2026-07-19T18:07:16Z",
+      "checked_at": "2026-07-19T19:22:11Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
-      "history_count": 88,
+      "history_count": 89,
       "target_price": null,
       "notify_on_any_drop": true,
       "basket_price": 42.39,
       "basket_original_price": 52.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "rendered https://uk.store.bambulab.com/products/filament-track-switch attempt 2: 401 Client Error: Unauthorized for url: https://r.jina.ai/https://uk.store.bambulab.com/products/filament-track-switch; direct https://uk.store.bambulab.com/search?q=Filament+Track+Switch: retailer r"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-cyberbrick-timelapse",
@@ -207,16 +207,16 @@
       "lowest_price": 20.99,
       "highest_price": 20.99,
       "in_stock": true,
-      "checked_at": "2026-07-19T18:07:16Z",
+      "checked_at": "2026-07-19T19:22:11Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
-      "history_count": 88,
+      "history_count": 89,
       "target_price": null,
       "notify_on_any_drop": true,
       "basket_price": 13.64,
       "basket_original_price": 20.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "rendered https://uk.store.bambulab.com/products/cyberbrick-time-lapse-kit attempt 2: 401 Client Error: Unauthorized for url: https://r.jina.ai/https://uk.store.bambulab.com/products/cyberbrick-time-lapse-kit; direct https://uk.store.bambulab.com/search?q=CyberBrick+Time-lapse+Kit"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-mag-alloy-scraper",
@@ -236,16 +236,16 @@
       "lowest_price": 16.99,
       "highest_price": 16.99,
       "in_stock": true,
-      "checked_at": "2026-07-19T18:07:16Z",
+      "checked_at": "2026-07-19T19:22:11Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
-      "history_count": 88,
+      "history_count": 89,
       "target_price": null,
       "notify_on_any_drop": true,
       "basket_price": 14.44,
       "basket_original_price": 16.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "rendered https://uk.store.bambulab.com/products/mag-alloy-scraper attempt 2: 401 Client Error: Unauthorized for url: https://r.jina.ai/https://uk.store.bambulab.com/products/mag-alloy-scraper; direct https://uk.store.bambulab.com/search?q=Mag-Alloy+Scraper: retailer returned a ch"
+      "check_error": "Could not find a plausible GBP product price in the page"
     },
     {
       "id": "bambu-tpu-feed-assist",
@@ -265,16 +265,16 @@
       "lowest_price": 39.09,
       "highest_price": 45.99,
       "in_stock": true,
-      "checked_at": "2026-07-19T18:07:16Z",
+      "checked_at": "2026-07-19T19:22:11Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
-      "history_count": 88,
+      "history_count": 89,
       "target_price": null,
       "notify_on_any_drop": true,
       "basket_price": 45.99,
       "basket_original_price": 45.99,
       "basket_status": "out-of-stock",
       "price_source": "Confirmed Bambu storefront price fallback",
-      "check_error": "rendered https://uk.store.bambulab.com/products/tpu-feed-assist-module attempt 2: 401 Client Error: Unauthorized for url: https://r.jina.ai/https://uk.store.bambulab.com/products/tpu-feed-assist-module; direct https://uk.store.bambulab.com/search?q=TPU+Feed+Assist+Module: 429 Cli",
+      "check_error": "Could not find a plausible GBP product price in the page",
       "fallback_note": "£39.09 was confirmed on the Bambu Lab UK product page on 2026-07-14 during the 4th Anniversary Sale. Bambu blocks the automated runner, so the configured price is used until the on-page countdown ends.",
       "fallback_stock_note": "Confirmed available on the Bambu Lab UK product page on 2026-07-14; used only while automated live stock checks are blocked."
     },
@@ -296,16 +296,16 @@
       "lowest_price": 479.99,
       "highest_price": 509.99,
       "in_stock": true,
-      "checked_at": "2026-07-19T18:07:16Z",
+      "checked_at": "2026-07-19T19:22:11Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
-      "history_count": 88,
+      "history_count": 89,
       "target_price": null,
       "notify_on_any_drop": true,
       "basket_price": null,
       "basket_original_price": null,
       "basket_status": "none",
-      "price_source": "Last known price",
-      "check_error": "direct https://www.overclockers.co.uk/corsair-vengeance-rgb-expo-32gb-2x16gb-ddr5-pc5-48000c30-6000mhz-dual-cha-my-4du-cs.html: 403 Client Error: Forbidden for url: https://www.overclockers.co.uk/corsair-vengeance-rgb-expo-32gb-2x16gb-ddr5-pc5-48000c30-6000mhz-dual-cha-my-4du-cs."
+      "price_source": "Live product page via rendered fallback",
+      "check_error": null
     }
   ],
   "source": "Automated GitHub Actions multi-product check"
