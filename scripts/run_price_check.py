@@ -401,7 +401,10 @@ def fetch_with_shopify(url: str, timeout: int, search_url: str = "") -> tuple[st
                 f"{fallback_source} stock + plausible rendered price",
             )
 
-        return fallback_html, fallback_source
+        raise RuntimeError(
+            f"Rendered Bambu fallback could not establish trustworthy price/stock data for "
+            f"{wanted['product_name']}"
+        )
 
     return ORIGINAL_FETCH(url, timeout, search_url)
 
