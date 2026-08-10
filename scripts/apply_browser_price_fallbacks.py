@@ -270,7 +270,11 @@ def apply_browser_price_fallbacks(
 
         product_id = str(product.get("id", ""))
         wanted = configured.get(product_id, {})
-        reference = decimal_value(product.get("price")) or decimal_value(wanted.get("initial_price"))
+        # Use the configured known-good price as the plausibility anchor. The
+        # stored latest price may itself be a poisoned text-scrape value (e.g.
+        # £10), and using it here would prevent Chrome from recovering the real
+        # storefront price on the next run.
+        reference = decimal_value(wanted.get("initial_price")) or decimal_value(product.get("price"))
         try:
             html = renderer(str(product.get("product_url", "")), timeout)
             current_price = extract_rendered_current_price(
