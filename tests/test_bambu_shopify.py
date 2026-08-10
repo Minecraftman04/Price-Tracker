@@ -142,6 +142,23 @@ class BambuShopifyTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "trustworthy product price"):
                 run_price_check.fetch_with_shopify(url, 35)
 
+    def test_rendered_fallback_with_untrusted_price_and_unknown_stock_stays_failed(self):
+        url = "https://uk.store.bambulab.com/products/tpu-feed-assist-module"
+        rendered = """
+        <html><body>
+          <h1>TPU Feed Assist Module</h1>
+          <p>H2 Series/X1 Series/P1 Series/P2S/X2D</p>
+          <aside>Save £10 on another order</aside>
+        </body></html>
+        """
+
+        with (
+            patch.object(run_price_check, "resolve_product", return_value=None),
+            patch.object(run_price_check, "ORIGINAL_FETCH", return_value=(rendered, "Rendered product page")),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "trustworthy price/stock data"):
+                run_price_check.fetch_with_shopify(url, 35)
+
 
 if __name__ == "__main__":
     unittest.main()
