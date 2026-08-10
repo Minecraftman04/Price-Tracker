@@ -100,6 +100,75 @@ class BrowserPriceFallbackTests(unittest.TestCase):
         self.assertEqual(alerts[0]["current_price"], "39.09")
         self.assertEqual(alerts[0]["previous_price"], "45.99")
 
+    def test_browser_fallback_recovers_from_poisoned_latest_price(self):
+        rendered = """
+        <html><body>
+          <main>
+            <h1>TPU Feed Assist Module</h1>
+            <div class="product-price"><span class="sale-price">£45.99 GBP</span></div>
+            <button>Add to Cart</button>
+          </main>
+        </body></html>
+        """
+        config = {
+            "currency": "GBP",
+            "request_timeout_seconds": 35,
+            "products": [
+                {
+                    "id": "bambu-tpu-feed-assist",
+                    "product_name": "TPU Feed Assist Module",
+                    "product_url": "https://uk.store.bambulab.com/products/tpu-feed-assist-module",
+                    "retailer": "Bambu Lab UK",
+                    "variant": "H2 Series/X1 Series/P1 Series/P2S/X2D",
+                    "initial_price": 45.99,
+                    "notify_on_any_drop": True,
+                    "target_price": None,
+                }
+            ],
+        }
+        latest = {
+            "generated_at": "2026-08-10T10:00:00Z",
+            "currency": "GBP",
+            "failed_checks": 1,
+            "products": [
+                {
+                    "id": "bambu-tpu-feed-assist",
+                    "product_name": "TPU Feed Assist Module",
+                    "product_url": "https://uk.store.bambulab.com/products/tpu-feed-assist-module",
+                    "retailer": "Bambu Lab UK",
+                    "variant": "H2 Series/X1 Series/P1 Series/P2S/X2D",
+                    "price": 10.0,
+                    "previous_price": 45.99,
+                    "in_stock": True,
+                    "check_error": "Rejected suspicious rendered Bambu price £10.00",
+                }
+            ],
+        }
+        histories = {
+            "bambu-tpu-feed-assist": [
+                {
+                    "timestamp": "2026-08-10T09:45:00Z",
+                    "price": 10.0,
+                    "currency": "GBP",
+                    "in_stock": True,
+                    "reason": "price-change",
+                }
+            ]
+        }
+
+        changed, alerts = apply_browser_price_fallbacks.apply_browser_price_fallbacks(
+            config,
+            latest,
+            histories,
+            renderer=lambda _url, _timeout: rendered,
+        )
+
+        product = latest["products"][0]
+        self.assertTrue(changed)
+        self.assertEqual(product["price"], 45.99)
+        self.assertIsNone(product["check_error"])
+        self.assertEqual(alerts, [])
+
 
 if __name__ == "__main__":
     unittest.main()
