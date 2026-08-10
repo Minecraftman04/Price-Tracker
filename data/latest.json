@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-10T10:10:36Z",
+  "generated_at": "2026-08-10T10:17:38Z",
   "currency": "GBP",
   "currency_symbol": "£",
   "basket": {
@@ -13,7 +13,7 @@
     "saved_out_of_stock_value": 45.99
   },
   "product_count": 10,
-  "failed_checks": 8,
+  "failed_checks": 9,
   "products": [
     {
       "id": "bambu-x2d-combo",
@@ -33,7 +33,7 @@
       "lowest_price": 10.0,
       "highest_price": 769.0,
       "in_stock": true,
-      "checked_at": "2026-08-10T10:10:36Z",
+      "checked_at": "2026-08-10T10:17:38Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
       "history_count": 440,
       "target_price": null,
@@ -42,7 +42,7 @@
       "basket_original_price": 769.0,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "Could not find a plausible GBP product price in the page"
+      "check_error": "Rendered Bambu fallback could not establish trustworthy price/stock data for Bambu Lab X2D"
     },
     {
       "id": "bambu-hotend-02",
@@ -62,7 +62,7 @@
       "lowest_price": 15.99,
       "highest_price": 15.99,
       "in_stock": true,
-      "checked_at": "2026-08-10T10:10:36Z",
+      "checked_at": "2026-08-10T10:17:38Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
       "history_count": 440,
       "target_price": null,
@@ -71,7 +71,7 @@
       "basket_original_price": 15.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "Could not find a plausible GBP product price in the page"
+      "check_error": "Rendered Bambu fallback could not establish trustworthy price/stock data for Bambu Hotend - H2/P2S/X2D"
     },
     {
       "id": "bambu-tungsten-hotend-04",
@@ -91,7 +91,7 @@
       "lowest_price": 82.99,
       "highest_price": 82.99,
       "in_stock": true,
-      "checked_at": "2026-08-10T10:10:36Z",
+      "checked_at": "2026-08-10T10:17:38Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
       "history_count": 440,
       "target_price": null,
@@ -100,7 +100,7 @@
       "basket_original_price": 82.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "Could not find a plausible GBP product price in the page"
+      "check_error": "Rendered Bambu fallback could not establish trustworthy price/stock data for Tungsten Carbide Hotend - H2/P2S/X2D"
     },
     {
       "id": "bambu-pla-basic-black",
@@ -120,7 +120,7 @@
       "lowest_price": 10.0,
       "highest_price": 20.99,
       "in_stock": true,
-      "checked_at": "2026-08-10T10:10:36Z",
+      "checked_at": "2026-08-10T10:17:38Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
       "history_count": 440,
       "target_price": null,
@@ -129,7 +129,7 @@
       "basket_original_price": 20.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "Could not find a plausible GBP product price in the page"
+      "check_error": "Rendered Bambu fallback could not establish trustworthy price/stock data for PLA Basic"
     },
     {
       "id": "bambu-vision-encoder",
@@ -149,7 +149,7 @@
       "lowest_price": 10.0,
       "highest_price": 63.99,
       "in_stock": true,
-      "checked_at": "2026-08-10T10:10:36Z",
+      "checked_at": "2026-08-10T10:17:38Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
       "history_count": 440,
       "target_price": null,
@@ -158,7 +158,7 @@
       "basket_original_price": 63.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "Could not find a plausible GBP product price in the page"
+      "check_error": "Rendered Bambu fallback could not establish trustworthy price/stock data for Vision Encoder"
     },
     {
       "id": "bambu-filament-track-switch",
@@ -178,7 +178,7 @@
       "lowest_price": 52.99,
       "highest_price": 52.99,
       "in_stock": true,
-      "checked_at": "2026-08-10T10:10:36Z",
+      "checked_at": "2026-08-10T10:17:38Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
       "history_count": 440,
       "target_price": null,
@@ -187,7 +187,7 @@
       "basket_original_price": 52.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "Could not find a plausible GBP product price in the page"
+      "check_error": "Rendered Bambu fallback could not establish trustworthy price/stock data for Filament Track Switch"
     },
     {
       "id": "bambu-cyberbrick-timelapse",
@@ -207,7 +207,7 @@
       "lowest_price": 5.31,
       "highest_price": 20.99,
       "in_stock": true,
-      "checked_at": "2026-08-10T10:10:36Z",
+      "checked_at": "2026-08-10T10:17:38Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
       "history_count": 440,
       "target_price": null,
@@ -216,7 +216,7 @@
       "basket_original_price": 20.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "Could not find a plausible GBP product price in the page"
+      "check_error": "Rendered Bambu fallback could not establish trustworthy price/stock data for CyberBrick Time-lapse Kit"
     },
     {
       "id": "bambu-mag-alloy-scraper",
@@ -236,7 +236,7 @@
       "lowest_price": 16.99,
       "highest_price": 16.99,
       "in_stock": true,
-      "checked_at": "2026-08-10T10:10:36Z",
+      "checked_at": "2026-08-10T10:17:38Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
       "history_count": 440,
       "target_price": null,
@@ -245,7 +245,7 @@
       "basket_original_price": 16.99,
       "basket_status": "selected",
       "price_source": "Last known price",
-      "check_error": "Could not find a plausible GBP product price in the page"
+      "check_error": "Rendered Bambu fallback could not establish trustworthy price/stock data for Mag-Alloy Scraper"
     },
     {
       "id": "bambu-tpu-feed-assist",
@@ -258,23 +258,25 @@
       "image_url": "https://store.bblcdn.com/s4/default/f9f765a8069f4d46831a5a1fd96b75ac/SLA.png__op__resize,m_lfit,w_3840__op__format,f_auto__op__quality,q_80",
       "currency": "GBP",
       "currency_symbol": "£",
-      "price": 10.0,
-      "previous_price": 45.99,
-      "change": -35.99,
-      "change_percent": -78.26,
+      "price": 45.99,
+      "previous_price": 10.0,
+      "change": 35.99,
+      "change_percent": 359.9,
       "lowest_price": 10.0,
       "highest_price": 45.99,
       "in_stock": true,
-      "checked_at": "2026-08-10T10:10:36Z",
+      "checked_at": "2026-08-10T10:17:38Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
-      "history_count": 440,
+      "history_count": 441,
       "target_price": null,
       "notify_on_any_drop": true,
       "basket_price": 45.99,
       "basket_original_price": 45.99,
       "basket_status": "out-of-stock",
-      "price_source": "Live product page via rendered fallback",
-      "check_error": null
+      "price_source": "Confirmed Bambu storefront price fallback",
+      "check_error": "Rendered Bambu fallback could not establish trustworthy price/stock data for TPU Feed Assist Module",
+      "fallback_note": "£39.09 was confirmed on the Bambu Lab UK product page on 2026-07-14 during the 4th Anniversary Sale. Bambu blocks the automated runner, so the configured price is used until the on-page countdown ends.",
+      "fallback_stock_note": "Confirmed available on the Bambu Lab UK product page on 2026-07-14; used only while automated live stock checks are blocked."
     },
     {
       "id": "corsair-ram",
@@ -294,7 +296,7 @@
       "lowest_price": 463.99,
       "highest_price": 509.99,
       "in_stock": true,
-      "checked_at": "2026-08-10T10:10:36Z",
+      "checked_at": "2026-08-10T10:17:38Z",
       "first_seen_at": "2026-07-14T11:09:12Z",
       "history_count": 440,
       "target_price": null,

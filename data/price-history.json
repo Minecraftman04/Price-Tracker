@@ -27735,6 +27735,13 @@
       "currency": "GBP",
       "in_stock": true,
       "reason": "price-change"
+    },
+    {
+      "timestamp": "2026-08-10T10:17:38Z",
+      "price": 45.99,
+      "currency": "GBP",
+      "in_stock": true,
+      "reason": "price-fallback"
     }
   ],
   "corsair-ram": [
